@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>GruaHelper</title>
+
+  <!-- PWA: installable web app -->
+  <meta name="description" content="Simulador de puente grua GruaHelper">
+  <meta name="theme-color" content="#1a1f2e">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- iOS home screen support (Safari does not read manifest.json) -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GruaHelper">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1f2e; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: #fff; min-height: 100vh; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    .app-container { min-height: 100vh; display: flex; flex-direction: column; }
+    .menu-screen { display: flex; flex-direction: column; align-items: center; padding: 24px 16px 16px; min-height: 100vh; user-select: none; }
+    .menu-title { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: #e8894a; font-weight: 700; margin-bottom: 4px; }
+    .menu-h1 { font-size: 26px; font-weight: 900; margin: 0; letter-spacing: -0.02em; }
+    .menu-sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+    .crane-name-badge { display: inline-flex; align-items: center; gap: 6px; background: #e8894a; color: #fff; border-radius: 20px; padding: 5px 18px; font-size: 13px; font-weight: 800; letter-spacing: 0.08em; margin-bottom: 10px; }
+    .menu-content { width: 100%; max-width: 420px; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .menu-svg-wrapper { width: 100%; display: flex; justify-content: center; margin-bottom: 10px; }
+    .menu-svg-wrapper svg { width: 100%; max-width: 380px; height: auto; max-height: 55vh; }
+    .menu-controls { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; margin-top: 2px; }
+    .arrow-btn { padding: 8px; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 10px; }
+    .arrow-btn.disabled { opacity: 0.2; pointer-events: none; }
+    .dots-container { display: flex; align-items: center; gap: 6px; }
+    .dot { border-radius: 50%; transition: all 0.2s; background: #3b4a6a; }
+    .dot.active { background: #e8894a; }
+    .menu-footer { text-align: center; font-size: 12px; color: #6b7280; margin: 4px 0 0; }
+    .sim-screen { min-height: 100vh; background: #eef0f3; color: #111; padding: 14px 14px 200px; box-sizing: border-box; }
+    .sim-header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #1a1f2e; position: sticky; top: 0; z-index: 150; border-bottom: 1px solid #2d3548; color: #fff; }
+    .back-btn { padding: 4px; min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: center; }
+    .sim-header-title { font-weight: 800; font-size: 16px; }
+    .sim-header-crane { margin-left: auto; font-size: 11px; color: #e8894a; font-weight: 700; background: rgba(232,137,74,0.15); padding: 3px 8px; border-radius: 10px; }
+    .sim-content { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+    .sim-top-title { text-align: center; padding: 4px 0; }
+    .sim-top-title h1 { font-size: clamp(15px, 3.5vw, 20px); margin: 0 0 2px; font-weight: 800; }
+    .sim-top-title p { margin: 0; color: #555; font-size: 12px; }
+    .racks-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+    .rack-card { background: #fff; border-radius: 6px; padding: 14px 14px 10px; border: 1.5px solid #333; position: relative; margin-top: 14px; }
+    .rack-code { position: absolute; top: -14px; left: 8px; background: #fff; border: 1.5px solid #333; border-radius: 4px; padding: 2px 10px; font-weight: 800; font-size: 13px; }
+    .rack-title { text-align: center; font-weight: 800; font-size: 11px; letter-spacing: 0.02em; margin: 4px 0 10px; line-height: 1.3; }
+    .rack-container { width: 190px; margin: 0 auto; position: relative; }
+    .box-row { position: absolute; left: 0; right: 0; height: 64px; }
+    .box-spacer { height: 10px; }
+    .box-wrapper { position: relative; padding-top: 11px; }
+    .pin-common { position: absolute; top: 0; width: 19px; height: 19px; border-radius: 50%; background: #7cb342; color: #fff; border: 2px solid #fff; box-shadow: 0 0 0 1px #5a8a2e; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; z-index: 2; }
+    .pin-left { left: 8px; }
+    .pin-right { right: 8px; }
+    .pin-mid { position: absolute; bottom: -9px; left: 50%; transform: translateX(-50%); width: 17px; height: 17px; border-radius: 50%; background: #7cb342; color: #fff; border: 2px solid #fff; box-shadow: 0 0 0 1px #5a8a2e; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; z-index: 2; }
+    .box-label { display: flex; align-items: center; justify-content: center; padding: 8px 6px; border-radius: 4px; font-weight: 800; font-size: 11px; border: 2px solid #aeb2b8; background: #fff; color: #111; min-height: 30px; box-sizing: border-box; }
+    .box-terms { display: flex; justify-content: space-between; font-size: 10.5px; color: #333; font-weight: 700; padding: 2px 4px 8px; }
+    .status-panel { background: #fff; border-radius: 10px; padding: 12px; border: 1px solid #dcdfe4; overflow-x: auto; }
+    .status-panel h2 { font-size: 14px; margin: 0 0 8px; font-weight: 800; color: #222; }
+    .status-table { min-width: 280px; }
+    .status-row { display: grid; grid-template-columns: 1fr 2fr; border-bottom: 1px solid #eee; }
+    .status-header-row { display: grid; grid-template-columns: 1fr 2fr; border-bottom: 2px solid #222; }
+    .status-cell { padding: 8px 6px; font-size: 14px; }
+    .status-header { text-align: left; padding: 8px 6px; font-size: 13px; font-weight: 700; }
+    .status-row.on { background: #fdecea; }
+    .status-row.on-db { background: #e3f0fc; }
+    .status-row.off { background: #fff; }
+    .legend-box { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-size: 12px; color: #555; background: #fff; border-radius: 10px; padding: 10px; border: 1px solid #dcdfe4; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-swatch { width: 16px; height: 16px; border-radius: 3px; display: inline-block; border: 2px solid #999; }
+    .legend-swatch.white { background: #fff; border-color: #999; }
+    .legend-swatch.red { background: #d32f2f; border-color: #d32f2f; }
+    .legend-swatch.blue { background: #1565c0; border-color: #1565c0; }
+    .float-control { position: fixed; bottom: 16px; right: 16px; z-index: 200; background: #1a1f2e; border-radius: 16px; padding: 10px; box-shadow: 0 6px 24px rgba(0,0,0,0.45); width: 148px; }
+    .float-status { border-radius: 9px; padding: 5px 8px; text-align: center; margin-bottom: 8px; }
+    .float-status.neutral { background: #2c2f33; }
+    .float-status.up { background: #8f1f1f; }
+    .float-status.down { background: #7a4010; }
+    .float-status-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.85; color: #fff; }
+    .float-status-headline { font-size: 13px; font-weight: 900; color: #fff; line-height: 1.2; }
+    .float-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .float-btn { border: none; border-radius: 9px; cursor: pointer; min-height: 52px; display: flex; align-items: center; justify-content: center; }
+    .float-btn.up { background: #c0392b; }
+    .float-btn.down { background: #1565c0; }
+    .float-btn.disabled { opacity: 0.35; pointer-events: none; }
+    .float-step-box { background: #0d1424; border: 2px solid #e8894a; border-radius: 9px; flex: 1; min-height: 52px; display: flex; align-items: center; justify-content: center; }
+    .float-step-text { font-size: 32px; font-weight: 900; color: #e8894a; line-height: 1; }
+    /* -- ACTUALIZACIÓN PARA EL BOTÓN NEUTRO -- */
+    .float-neutro-btn { background: #2c2f33; border: none; border-radius: 9px; cursor: pointer; min-height: 44px; width: 100%; display: flex; align-items: center; justify-content: center; padding: 5px; }
+    .float-neutro-btn svg { width: 22px; height: 22px; fill: white; opacity: 0.75; }
+  </style>
+</head>
+<body>
+<div id="app" class="app-container">
+  <div style="display:flex; align-items:center; justify-content:center; height:100vh; color:#6b7280; font-size:14px;">
+    Cargando simulador...
+  </div>
+</div>
+<script>
+// =============================================
+// 1. CONFIGURACIÓN
+// =============================================
+const CRANES = [
+  { name: 'GRÚA 1', ready: ['gancho-principal', 'gancho-auxiliar'] },
+  { name: 'GRÚA 2', ready: [] },
+  { name: 'GRÚA 3', ready: [] },
+];
+
+const P_BOX = [
+  'WWWWWWWWWWWWWWWWWWWWWWWWWWWW', 'WWWWWWWWWWWWWWWWWWWWRRRWWWWW',
+  'WWWWWWWWWWWWWWWWWWRRRRRWWWWW', 'WWWWWWWWWWWWWWRRRRRRRRRWWWWW',
+  'WWWWWWWWWWWWRRRRRRRRRRRWWWWW', 'RRRRRRRRRRRRRRRRRRRRRRRWWWWW',
+  'WWWWWWWWWWWWWWWWWWWWWWWWWWWW', 'RRRRRRRRRRRRWWWWWWWWWWWBBBBB',
+  'RRRRRRRRWWWWWWWWWWWWWWWBBBBW', 'RRRRRRRRWWWWWWWWWWWWRRRBBBBW',
+  'RRRRRRRRWWWWWWWWWRRRRRRBBBBW', 'RRRRRRRRRRRRRRRRRRRRRRRBBBBW',
+  'RRRRRRRRRRRRRRRRRRRRRRRBBWWW'
+];
+
+const P_TERM = {
+  1:{pinL:1,pinR:7,termL:'A',termR:'R1'}, 2:{pinL:1,pinR:7,termL:'A',termR:'B'},
+  3:{pinL:1,pinR:7,termL:'C',termR:'B'}, 4:{pinL:1,pinR:7,termL:'C',termR:'D'},
+  5:{pinL:1,pinR:7,termL:'E',termR:'D'}, 6:{pinL:1,pinR:7,termL:'E',termR:'F'},
+  7:{pinL:1,pinR:7,termL:'G',termR:'F'}, 8:{pinL:1,pinR:7,termL:'G',termR:'R11'},
+  9:{pinL:1,pinR:7,termL:'H',termR:'R11'}, 10:{pinL:1,pinR:7,termL:'H',termR:'J'},
+  11:{pinL:1,pinR:7,termL:'K',termR:'J'}, 12:{pinL:1,pinR:7,termL:'K',termR:'L',midPin:5,midTerm:'R2'},
+  13:{pinL:1,pinR:7,termL:'M',termR:'L'}, 14:{pinL:1,pinR:7,termL:'M',termR:'R3'},
+  15:{pinL:1,pinR:7,termL:'N',termR:'R3'}, 16:{pinL:1,pinR:7,termL:'N',termR:'P'},
+  17:{pinL:1,pinR:7,termL:'R4',termR:'P'}, 18:{pinL:1,pinR:6,termL:'R4',termR:'R'},
+  19:{pinL:1,pinR:6,termL:'S',termR:'R'}, 20:{pinL:1,pinR:6,termL:'S',termR:'R5'},
+  21:{pinL:1,pinR:6,termL:'T',termR:'R5'}, 22:{pinL:1,pinR:6,termL:'T',termR:'U'},
+  23:{pinL:1,pinR:6,termL:'R6',termR:'U'}, 24:{pinL:1,pinR:10,termL:'R7',termR:'R8'},
+  25:{pinL:1,pinR:10,termL:'R7',termR:'R8'}, 26:{pinL:1,pinR:7,termL:'V',termR:'R8'},
+  27:{pinL:1,pinR:7,termL:'V',termR:'W',midPin:3,midTerm:'R9'}, 28:{pinL:3,pinR:7,termL:'R10',termR:'W'}
+};
+
+const P_RACKS = [
+  { code: '19', title1: 'MAIN HOIST', title2: 'RESISTOR RACK #1', from: 1, to: 8 },
+  { code: '19A', title1: 'MAIN HOIST', title2: 'RESISTOR RACK #2', from: 9, to: 16 },
+  { code: '19B', title1: 'MAIN HOIST', title2: 'RESISTOR RACK #3', from: 17, to: 23 },
+  { code: '19C', title1: 'MAIN HOIST', title2: 'RESISTOR RACK #4', from: 24, to: 28 }
+];
+const P_SYMBOLS = ['M','H','DB','1L','2L','3L','1A','2A','3A','4A','5A'];
+
+const state = { view: 'menu', craneIndex: 0, posP: 0 };
+
+function pClosedMap(p) {
+  const dr = (a,b) => p <= -a && p >= -b;
+  return {
+    M:p!==0, H:p>0, DB:p===0||p===-1, '1L':p<0, '2L':dr(2,5), '3L':p===-6,
+    '1A':p>=2&&p<=6, '2A':(p>=3&&p<=6)||dr(2,4), '3A':(p>=4&&p<=6)||dr(1,4),
+    '4A':(p>=5&&p<=6)||dr(1,3), '5A':p===6||dr(1,2)
+  };
+}
+
+function boxVisual(c) {
+  if(c==='R') return {bg:'#d32f2f',border:'#8f1f1f',fg:'#fff',label:'Corriente'};
+  if(c==='B') return {bg:'#1565c0',border:'#0d3f7a',fg:'#fff',label:'Frenado Dinámico'};
+  return {bg:'#fff',border:'#aeb2b8',fg:'#111',label:'Inactivo'};
+}
+
+// =============================================
+// 2. LÓGICA DE RENDER
+// =============================================
+function computeSimP(pos) {
+  const closedMap = pClosedMap(pos);
+  const colorString = P_BOX[6 - pos];
+  const ROW_H = 64;
+
+  const racks = P_RACKS.map(rack => {
+    const boxes = [];
+    let idx = 0;
+    for (let n = rack.from; n <= rack.to; n++) {
+      const v = boxVisual(colorString[n - 1]);
+      const t = P_TERM[n];
+      boxes.push({
+        num: n, rowTop: idx * ROW_H,
+        pinL: t.pinL, pinR: t.pinR, termL: t.termL, termR: t.termR,
+        midPin: t.midPin||'', midTerm: t.midTerm||'', hasMid: !!t.midPin,
+        style: `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};background:${v.bg};color:${v.fg};min-height:30px;box-sizing:border-box;`
+      });
+      idx++;
+    }
+    return { code: rack.code, title1: rack.title1, title2: rack.title2, boxes, stackHeight: boxes.length * ROW_H };
+  });
+
+  const symbolRows = P_SYMBOLS.map(sym => {
+    const on = closedMap[sym];
+    return {
+      symbol: sym,
+      mark: on ? '✅ Cerrado' : '— Abierto',
+      rowClass: on ? (sym === 'DB' ? 'on-db' : 'on') : 'off'
+    };
+  });
+
+  let stateLabel, stepHeadline;
+  const absP = pos < 0 ? -pos : pos;
+  if (pos === 0) { stateLabel = 'Reposo'; stepHeadline = 'NEUTRO (OFF)'; }
+  else if (pos > 0) { stateLabel = 'Subiendo'; stepHeadline = 'Paso ' + pos + ' de 6'; }
+  else { stateLabel = 'Bajando'; stepHeadline = 'Paso ' + absP + ' de 6'; }
+
+  const floatStatusBg = pos === 0 ? '#2c2f33' : pos > 0 ? '#8f1f1f' : '#7a4010';
+  const disabledStyle = 'opacity:0.35;pointer-events:none;';
+  const max = 6;
+
+  return {
+    racks, symbolRows, stateLabel, stepHeadline,
+    subirDisabled: pos >= max, bajarDisabled: pos <= -max,
+    floatStatusBg, floatStepLabel: pos === 0 ? 'N' : ('P' + absP),
+    floatSubirStyle: pos >= max ? disabledStyle : '',
+    floatBajarStyle: pos <= -max ? disabledStyle : ''
+  };
+}
+
+// =============================================
+// 3. NAVEGACIÓN Y ACCIONES
+// =============================================
+function navigateTo(view) { state.view = view; render(); }
+function goBack() { navigateTo('menu'); }
+function switchCrane(dir) {
+  const n = state.craneIndex + dir;
+  if (n < 0 || n >= CRANES.length) return;
+  state.craneIndex = n;
+  render();
+}
+function handlePanel(panel, label) {
+  const crane = CRANES[state.craneIndex];
+  if ((crane.ready || []).includes(panel)) navigateTo(panel);
+  else alert('El módulo "' + label + '" para ' + crane.name + ' aún no está disponible.');
+}
+function simSubir() { if(state.view === 'gancho-principal' && state.posP < 6) { state.posP += 1; render(); } }
+function simBajar() { if(state.view === 'gancho-principal' && state.posP > -6) { state.posP -= 1; render(); } }
+function simNeutro() { if(state.view === 'gancho-principal') { state.posP = 0; render(); } }
+
+// =============================================
+// 4. RENDERIZADO HTML
+// =============================================
+function render() {
+  console.log('Renderizando aplicación...');
+  const app = document.getElementById('app');
+  if(!app) return console.error('¡Error! No se encontró el elemento #app');
+  
+  const { view, craneIndex } = state;
+  const crane = CRANES[craneIndex];
+  if(!crane) return console.error('Grúa no encontrada en índice', craneIndex);
+
+  if (view === 'menu') app.innerHTML = renderMenu(crane, craneIndex);
+  else if (view === 'gancho-principal') app.innerHTML = renderSimulador(crane);
+  else app.innerHTML = `<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:#1a1f2e;">
+      <div style="font-size:32px;color:#e8894a;margin-bottom:10px;">🚧</div>
+      <h2 style="margin:0;font-size:22px;font-weight:800;">Módulo en construcción</h2>
+      <button onclick="goBack()" style="margin-top:20px;padding:10px 20px;background:#e8894a;color:#fff;border:none;border-radius:8px;font-weight:bold;">Volver</button>
+    </div>`;
+}
+
+function renderMenu(crane, idx) {
+  const total = CRANES.length;
+  const ready = crane.ready || [];
+  const dotsHtml = CRANES.map((_, i) => `<div class="dot ${i === idx ? 'active' : ''}" style="width:${i===idx?10:7}px;height:${i===idx?10:7}px;"></div>`).join('');
+  return `
+    <div class="menu-screen">
+      <div class="menu-title">Puente Grúa</div>
+      <h1 class="menu-h1">GruaHelper</h1>
+      <div class="menu-sub">v0.2 Vanilla</div>
+      <div class="crane-name-badge">${crane.name}</div>
+      <div class="menu-content">
+        <div class="menu-svg-wrapper">
+          <svg viewBox="0 0 380 415" xmlns="http://www.w3.org/2000/svg">
+            <rect onclick="handlePanel('panel-puente','Panel Puente')" x="14" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect>
+            <text x="52" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text>
+            <text x="52" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PUENTE</text>
+            <rect onclick="handlePanel('panel-carro','Panel Carro')" x="102" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect>
+            <text x="140" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text>
+            <text x="140" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">CARRO</text>
+            <rect onclick="handlePanel('gancho-auxiliar','Gancho Auxiliar')" x="190" y="80" width="76" height="155" rx="6" fill="${ready.includes('gancho-auxiliar') ? '#e8894a' : '#c07030'}" style="cursor:pointer;filter:drop-shadow(0 0 6px rgba(232,137,74,0.4));"></rect>
+            <text x="228" y="160" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text>
+            <text x="228" y="174" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">AUXILIAR</text>
+            <circle cx="228" cy="136" r="10" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle>
+            <text x="228" y="141" text-anchor="middle" font-size="12" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-auxiliar') ? '✓' : '…'}</text>
+            <rect onclick="handlePanel('gancho-principal','Gancho Principal')" x="278" y="44" width="88" height="191" rx="6" fill="#e8894a" style="cursor:pointer;filter:drop-shadow(0 0 8px rgba(232,137,74,0.55));"></rect>
+            <text x="322" y="136" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text>
+            <text x="322" y="152" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PRINCIPAL</text>
+            <circle cx="322" cy="112" r="12" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle>
+            <text x="322" y="117" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-principal') ? '✓' : '…'}</text>
+            <rect x="8" y="235" width="364" height="22" rx="3" fill="#1e3a7a"></rect>
+            <rect x="8" y="255" width="364" height="8" rx="2" fill="#162d5e"></rect>
+            <polygon points="152,263 228,263 210,310 170,310" fill="#1e3a7a"></polygon>
+            <polygon points="155,263 225,263 207,308 173,308" fill="#25489a"></polygon>
+            <line x1="190" y1="310" x2="190" y2="340" stroke="#3b5bdb" stroke-width="3"></line>
+            <polygon points="190,340 214,365 190,390 166,365" fill="#1e3a7a"></polygon>
+            <polygon points="190,343 211,365 190,387 169,365" fill="#25489a"></polygon>
+            <line x1="190" y1="390" x2="190" y2="406" stroke="#3b5bdb" stroke-width="3"></line>
+            <path d="M190,406 Q190,415 202,415 Q214,415 214,404 Q214,396 207,394" fill="none" stroke="#e0e7ff" stroke-width="3.5" stroke-linecap="round"></path>
+          </svg>
+        </div>
+        <div class="menu-controls">
+          <button class="arrow-btn ${idx <= 0 ? 'disabled' : ''}" onclick="switchCrane(-1)">
+            <svg width="32" height="32" viewBox="0 0 24 24"><path fill="white" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+          </button>
+          <div class="dots-container">${dotsHtml}</div>
+          <button class="arrow-btn ${idx >= total - 1 ? 'disabled' : ''}" onclick="switchCrane(1)">
+            <svg width="32" height="32" viewBox="0 0 24 24"><path fill="white" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+          </button>
+        </div>
+        <p class="menu-footer">Toca un panel para abrir su simulador</p>
+      </div>
+    </div>
+  `;
+}
+
+function renderSimulador(crane) {
+  const sim = computeSimP(state.posP);
+  const rackHtml = sim.racks.map(rack => `
+    <div class="rack-card">
+      <div class="rack-code">${rack.code}</div>
+      <div class="rack-title">${rack.title1}<br>${rack.title2}</div>
+      <div class="rack-container">
+        <div style="position:relative;height:${rack.stackHeight}px;">
+          ${rack.boxes.map(b => `
+            <div class="box-row" style="top:${b.rowTop}px;">
+              <div class="box-spacer"></div>
+              <div class="box-wrapper" title="BOX NO. ${b.num}">
+                <div class="pin-common pin-left">${b.pinL}</div>
+                <div class="pin-common pin-right">${b.pinR}</div>
+                ${b.hasMid ? `<div class="pin-mid">${b.midPin}</div>` : ''}
+                <div class="box-label" style="${b.style}">BOX NO. ${b.num}</div>
+                <div class="box-terms">
+                  <span>${b.termL}</span>
+                  ${b.hasMid ? `<span>${b.midTerm}</span>` : ''}
+                  <span>${b.termR}</span>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+        <div style="height:78px;"></div>
+      </div>
+    </div>
+  `).join('');
+
+  const symbolHtml = sim.symbolRows.map(row => `
+    <div class="status-row ${row.rowClass}">
+      <div class="status-cell" style="font-weight:700;">${row.symbol}</div>
+      <div class="status-cell">${row.mark}</div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="sim-screen">
+      <div class="sim-header">
+        <button class="back-btn" onclick="goBack()">
+          <svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        </button>
+        <span class="sim-header-title">Gancho Principal</span>
+        <span class="sim-header-crane">${crane.name}</span>
+      </div>
+      <div class="sim-content">
+        <div class="sim-top-title"><h1>Simulador Gancho Principal</h1><p>Rack #1 a Rack #4 · 28 boxes</p></div>
+        <div class="racks-grid">${rackHtml}</div>
+        <div class="status-panel">
+          <h2>Panel de estado de contactores</h2>
+          <div class="status-table">
+            <div class="status-header-row"><div class="status-header">Símbolo</div><div class="status-header">Estado</div></div>
+            ${symbolHtml}
+          </div>
+        </div>
+        <div class="legend-box">
+          <div class="legend-item"><span class="legend-swatch white"></span>Resistencia en corto</div>
+          <div class="legend-item"><span class="legend-swatch red"></span>Corriente circulando</div>
+          <div class="legend-item"><span class="legend-swatch blue"></span>Paño de frenado dinámico</div>
+        </div>
+      </div>
+      <div class="float-control">
+        <div class="float-status ${state.posP === 0 ? 'neutral' : state.posP > 0 ? 'up' : 'down'}" style="background:${sim.floatStatusBg};">
+          <div class="float-status-label">${sim.stateLabel}</div>
+          <div class="float-status-headline">${sim.stepHeadline}</div>
+        </div>
+        <div class="float-grid">
+          <div class="float-col-left">
+            <button class="float-btn up ${sim.subirDisabled ? 'disabled' : ''}" onclick="simSubir()">
+              <svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M12 4l-8 8h5v8h6v-8h5z"/></svg>
+            </button>
+            <button class="float-btn down ${sim.bajarDisabled ? 'disabled' : ''}" onclick="simBajar()">
+              <svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M12 20l8-8h-5V4H9v8H4z"/></svg>
+            </button>
+          </div>
+          <div class="float-col-right">
+            <div class="float-step-box"><span class="float-step-text">${sim.floatStepLabel}</span></div>
+            <button class="float-neutro-btn" onclick="simNeutro()">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// =============================================
+// 5. ARRANQUE SEGURO
+// =============================================
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('Página cargada, iniciando render...');
+  render();
+  // Exponer funciones para los eventos onclick del HTML
+  window.goBack = goBack;
+  window.switchCrane = switchCrane;
+  window.handlePanel = handlePanel;
+  window.simSubir = simSubir;
+  window.simBajar = simBajar;
+  window.simNeutro = simNeutro;
+});
+
+// Registro del Service Worker (funcionamiento offline + instalación como app)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(err) {
+      console.error('Error registrando el Service Worker:', err);
+    });
+  });
+}
+</script>
+</body>
+</html>
