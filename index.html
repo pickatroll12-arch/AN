@@ -60,7 +60,9 @@
     .pin-common { position: absolute; top: 0; width: 19px; height: 19px; border-radius: 50%; background: #7cb342; color: #fff; border: 2px solid #fff; box-shadow: 0 0 0 1px #5a8a2e; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; z-index: 2; }
     .pin-left { left: 8px; }
     .pin-right { right: 8px; }
-    .pin-mid { position: absolute; bottom: -9px; left: 50%; transform: translateX(-50%); width: 17px; height: 17px; border-radius: 50%; background: #7cb342; color: #fff; border: 2px solid #fff; box-shadow: 0 0 0 1px #5a8a2e; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; z-index: 2; }
+    .mid-tap { position: absolute; bottom: 2px; transform: translateX(-50%); display: flex; flex-direction: row; align-items: center; gap: 3px; z-index: 3; white-space: nowrap; }
+    .mid-tap-label { font-size: 10px; font-weight: 700; color: #333; line-height: 1; }
+    .pin-mid { width: 17px; height: 17px; border-radius: 50%; background: #7cb342; color: #fff; border: 2px solid #fff; box-shadow: 0 0 0 1px #5a8a2e; font-size: 9px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
     .box-label { display: flex; align-items: center; justify-content: center; padding: 8px 6px; border-radius: 4px; font-weight: 800; font-size: 11px; border: 2px solid #aeb2b8; background: #fff; color: #111; min-height: 30px; box-sizing: border-box; }
     .box-terms { display: flex; justify-content: space-between; font-size: 10.5px; color: #333; font-weight: 700; padding: 2px 4px 8px; }
     .status-panel { background: #fff; border-radius: 10px; padding: 12px; border: 1px solid #dcdfe4; overflow-x: auto; }
@@ -93,7 +95,6 @@
     .float-btn.disabled { opacity: 0.35; pointer-events: none; }
     .float-step-box { background: #0d1424; border: 2px solid #e8894a; border-radius: 9px; flex: 1; min-height: 52px; display: flex; align-items: center; justify-content: center; }
     .float-step-text { font-size: 32px; font-weight: 900; color: #e8894a; line-height: 1; }
-    /* -- ACTUALIZACIÓN PARA EL BOTÓN NEUTRO -- */
     .float-neutro-btn { background: #2c2f33; border: none; border-radius: 9px; cursor: pointer; min-height: 44px; width: 100%; display: flex; align-items: center; justify-content: center; padding: 5px; }
     .float-neutro-btn svg { width: 22px; height: 22px; fill: white; opacity: 0.75; }
   </style>
@@ -106,7 +107,7 @@
 </div>
 <script>
 // =============================================
-// 1. CONFIGURACIÓN
+// 1. CONFIGURACIÓN Y DATOS
 // =============================================
 const CRANES = [
   { name: 'GRÚA 1', ready: ['gancho-principal', 'gancho-auxiliar'] },
@@ -114,6 +115,7 @@ const CRANES = [
   { name: 'GRÚA 3', ready: [] },
 ];
 
+// --- DATOS GANCHO PRINCIPAL ---
 const P_BOX = [
   'WWWWWWWWWWWWWWWWWWWWWWWWWWWW', 'WWWWWWWWWWWWWWWWWWWWRRRWWWWW',
   'WWWWWWWWWWWWWWWWWWRRRRRWWWWW', 'WWWWWWWWWWWWWWRRRRRRRRRWWWWW',
@@ -123,7 +125,6 @@ const P_BOX = [
   'RRRRRRRRWWWWWWWWWRRRRRRBBBBW', 'RRRRRRRRRRRRRRRRRRRRRRRBBBBW',
   'RRRRRRRRRRRRRRRRRRRRRRRBBWWW'
 ];
-
 const P_TERM = {
   1:{pinL:1,pinR:7,termL:'A',termR:'R1'}, 2:{pinL:1,pinR:7,termL:'A',termR:'B'},
   3:{pinL:1,pinR:7,termL:'C',termR:'B'}, 4:{pinL:1,pinR:7,termL:'C',termR:'D'},
@@ -138,9 +139,8 @@ const P_TERM = {
   21:{pinL:1,pinR:6,termL:'T',termR:'R5'}, 22:{pinL:1,pinR:6,termL:'T',termR:'U'},
   23:{pinL:1,pinR:6,termL:'R6',termR:'U'}, 24:{pinL:1,pinR:10,termL:'R7',termR:'R8'},
   25:{pinL:1,pinR:10,termL:'R7',termR:'R8'}, 26:{pinL:1,pinR:7,termL:'V',termR:'R8'},
-  27:{pinL:1,pinR:7,termL:'V',termR:'W',midPin:3,midTerm:'R9'}, 28:{pinL:3,pinR:7,termL:'R10',termR:'W'}
+  27:{pinL:1,pinR:7,termL:'V',termR:'W',midPin:3,midTerm:'R9'}, 28:{pinL:1,pinR:7,termL:'V',termR:'W',midPin:3,midTerm:'R10'}
 };
-
 const P_RACKS = [
   { code: '19', title1: 'MAIN HOIST', title2: 'RESISTOR RACK #1', from: 1, to: 8 },
   { code: '19A', title1: 'MAIN HOIST', title2: 'RESISTOR RACK #2', from: 9, to: 16 },
@@ -149,8 +149,42 @@ const P_RACKS = [
 ];
 const P_SYMBOLS = ['M','H','DB','1L','2L','3L','1A','2A','3A','4A','5A'];
 
-const state = { view: 'menu', craneIndex: 0, posP: 0 };
+// --- DATOS GANCHO AUXILIAR ---
+const A_BOX = [
+  'WWWWWWWWWWWWWWWWWWWW', 'WWWWWWWWWWWWRRRRWWWW',
+  'WWWWWWWWRRRRRRRRWWWW', 'WWWWRRRRRRRRRRRRWWWW',
+  'RRRRRRRRRRRRRRRRWWWW', 'WWWWWWWWWWWWWWWWWWWW',
+  'RRRRRRRWWWWWWWWWBBBB', 'RRRRRRRWWWWWWWWWBBBW',
+  'RRRRRRRWWWRRRRRRBBBW', 'RRRRRRRRRRRRRRRRBBBW',
+  'RRRRRRRRRRRRRRRRBBWW'
+];
+const A_TERM = {
+  1:{pinL:1,pinR:10,termL:'A',termR:'R1'}, 2:{pinL:1,pinR:10,termL:'A',termR:'B'},
+  3:{pinL:1,pinR:10,termL:'C',termR:'B'}, 4:{pinL:1,pinR:10,termL:'C',termR:'D'},
+  5:{pinL:1,pinR:10,termL:'E',termR:'D',midPin:4,midTerm:'R11'}, 6:{pinL:1,pinR:10,termL:'E',termR:'F'},
+  7:{pinL:1,pinR:10,termL:'G',termR:'F',midPin:3,midTerm:'R2'}, 8:{pinL:1,pinR:10,termL:'G',termR:'H'},
+  9:{pinL:1,pinR:10,termL:'J',termR:'H'}, 10:{pinL:1,pinR:7,termL:'J',termR:'R3'},
+  11:{pinL:1,pinR:7,termL:'K',termR:'R3'}, 12:{pinL:1,pinR:7,termL:'K',termR:'L'},
+  13:{pinL:1,pinR:7,termL:'R4',termR:'L'}, 14:{pinL:1,pinR:7,termL:'R4',termR:'M'},
+  15:{pinL:1,pinR:7,termL:'N',termR:'M'},
+  16:{pinL:1,pinR:10,termL:'N',termR:'R5',midPin:5,midTerm:'R5'},
+  17:{pinL:1,pinR:10,termL:'P',termR:'R7'},
+  18:{pinL:1,pinR:10,termL:'P',termR:'R',midPin:2,midTerm:'R8'},
+  19:{pinL:1,pinR:10,termL:'S',termR:'R',midPin:7,midTerm:'R9'},
+  20:{pinL:1,pinR:10,termL:'S',termR:'R',midPin:5,midTerm:'R10'}
+};
+const A_RACKS = [
+  { code: '26', title1: 'AUX. HOIST', title2: 'RESISTOR RACK #1', from: 1, to: 8 },
+  { code: '26A', title1: 'AUX. HOIST', title2: 'RESISTOR RACK #2', from: 9, to: 16 },
+  { code: '26B', title1: 'AUX. HOIST', title2: 'RESISTOR RACK #3', from: 17, to: 20 }
+];
+const A_SYMBOLS = ['M','H','DB','1L','2L','3L','1A','2A','3A','4A'];
 
+const state = { view: 'menu', craneIndex: 0, posP: 0, posA: 0 };
+
+// =============================================
+// 2. LÓGICA DE ESTADO Y TRANSICIONES
+// =============================================
 function pClosedMap(p) {
   const dr = (a,b) => p <= -a && p >= -b;
   return {
@@ -159,57 +193,117 @@ function pClosedMap(p) {
     '4A':(p>=5&&p<=6)||dr(1,3), '5A':p===6||dr(1,2)
   };
 }
-
+function aClosedMap(p) {
+  return {
+    M: p !== 0, H: p > 0, DB: p === 0 || p === -1,
+    '1L': p < 0, '2L': (p <= -2 && p >= -4), '3L': p === -5,
+    '1A': (p >= 2 && p <= 5), '2A': (p >= 3 && p <= 5) || (p <= -2 && p >= -3),
+    '3A': (p >= 4 && p <= 5) || (p <= -1 && p >= -2), '4A': (p === 5) || (p <= -1 && p >= -2),
+  };
+}
 function boxVisual(c) {
   if(c==='R') return {bg:'#d32f2f',border:'#8f1f1f',fg:'#fff',label:'Corriente'};
   if(c==='B') return {bg:'#1565c0',border:'#0d3f7a',fg:'#fff',label:'Frenado Dinámico'};
   return {bg:'#fff',border:'#aeb2b8',fg:'#111',label:'Inactivo'};
 }
+function midPinPercent(t) {
+  return ((t.midPin - t.pinL) / (t.pinR - t.pinL)) * 100;
+}
 
 // =============================================
-// 2. LÓGICA DE RENDER
+// 3. FUNCIONES DE CÁLCULO DE RENDER
 // =============================================
 function computeSimP(pos) {
   const closedMap = pClosedMap(pos);
   const colorString = P_BOX[6 - pos];
   const ROW_H = 64;
-
+  const TAP_EXTRA = 20;
   const racks = P_RACKS.map(rack => {
     const boxes = [];
-    let idx = 0;
+    let cursorY = 0;
     for (let n = rack.from; n <= rack.to; n++) {
       const v = boxVisual(colorString[n - 1]);
       const t = P_TERM[n];
-      boxes.push({
-        num: n, rowTop: idx * ROW_H,
-        pinL: t.pinL, pinR: t.pinR, termL: t.termL, termR: t.termR,
-        midPin: t.midPin||'', midTerm: t.midTerm||'', hasMid: !!t.midPin,
-        style: `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};background:${v.bg};color:${v.fg};min-height:30px;box-sizing:border-box;`
-      });
-      idx++;
-    }
-    return { code: rack.code, title1: rack.title1, title2: rack.title2, boxes, stackHeight: boxes.length * ROW_H };
-  });
+      let style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background:${v.bg};color:${v.fg};`;
+      const hasMid = !!t.midPin;
+      const midPct = hasMid ? midPinPercent(t) : 50;
 
+      boxes.push({
+        num: n, rowTop: cursorY,
+        pinL: t.pinL, pinR: t.pinR, termL: t.termL, termR: t.termR,
+        midPin: t.midPin||'', midTerm: t.midTerm||'', hasMid, midPct,
+        style
+      });
+      cursorY += ROW_H + (hasMid ? TAP_EXTRA : 0);
+    }
+    return { code: rack.code, title1: rack.title1, title2: rack.title2, boxes, stackHeight: cursorY };
+  });
   const symbolRows = P_SYMBOLS.map(sym => {
     const on = closedMap[sym];
-    return {
-      symbol: sym,
-      mark: on ? '✅ Cerrado' : '— Abierto',
-      rowClass: on ? (sym === 'DB' ? 'on-db' : 'on') : 'off'
-    };
+    return { symbol: sym, mark: on ? '✅ Cerrado' : '— Abierto', rowClass: on ? (sym === 'DB' ? 'on-db' : 'on') : 'off' };
   });
-
   let stateLabel, stepHeadline;
   const absP = pos < 0 ? -pos : pos;
   if (pos === 0) { stateLabel = 'Reposo'; stepHeadline = 'NEUTRO (OFF)'; }
   else if (pos > 0) { stateLabel = 'Subiendo'; stepHeadline = 'Paso ' + pos + ' de 6'; }
   else { stateLabel = 'Bajando'; stepHeadline = 'Paso ' + absP + ' de 6'; }
-
   const floatStatusBg = pos === 0 ? '#2c2f33' : pos > 0 ? '#8f1f1f' : '#7a4010';
   const disabledStyle = 'opacity:0.35;pointer-events:none;';
   const max = 6;
+  return {
+    racks, symbolRows, stateLabel, stepHeadline,
+    subirDisabled: pos >= max, bajarDisabled: pos <= -max,
+    floatStatusBg, floatStepLabel: pos === 0 ? 'N' : ('P' + absP),
+    floatSubirStyle: pos >= max ? disabledStyle : '',
+    floatBajarStyle: pos <= -max ? disabledStyle : ''
+  };
+}
 
+function computeSimA(pos) {
+  const closedMap = aClosedMap(pos);
+  const colorString = A_BOX[5 - pos];
+  const ROW_H = 64;
+  const TAP_EXTRA = 20;
+  const racks = A_RACKS.map(rack => {
+    const boxes = [];
+    let cursorY = 0;
+    for (let n = rack.from; n <= rack.to; n++) {
+      const v = boxVisual(colorString[n - 1]);
+      const t = A_TERM[n];
+      let style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background:${v.bg};color:${v.fg};`;
+      const hasMid = !!t.midPin;
+      const midPct = hasMid ? midPinPercent(t) : 50;
+
+      if (pos === -1 && hasMid) {
+        if (n === 7) {
+          style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to right, #ffffff ${midPct}%, #d32f2f ${midPct}%); color: #111;`;
+        } else if (n === 20) {
+          style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to right, #1565c0 ${midPct}%, #ffffff ${midPct}%); color: #111;`;
+        }
+      }
+
+      boxes.push({
+        num: n, rowTop: cursorY,
+        pinL: t.pinL, pinR: t.pinR, termL: t.termL, termR: t.termR,
+        midPin: t.midPin||'', midTerm: t.midTerm||'', hasMid, midPct,
+        style
+      });
+      cursorY += ROW_H + (hasMid ? TAP_EXTRA : 0);
+    }
+    return { code: rack.code, title1: rack.title1, title2: rack.title2, boxes, stackHeight: cursorY };
+  });
+  const symbolRows = A_SYMBOLS.map(sym => {
+    const on = closedMap[sym];
+    return { symbol: sym, mark: on ? '✅ Cerrado' : '— Abierto', rowClass: on ? (sym === 'DB' ? 'on-db' : 'on') : 'off' };
+  });
+  let stateLabel, stepHeadline;
+  const absP = pos < 0 ? -pos : pos;
+  if (pos === 0) { stateLabel = 'Reposo'; stepHeadline = 'NEUTRO (OFF)'; }
+  else if (pos > 0) { stateLabel = 'Subiendo'; stepHeadline = 'Paso ' + pos + ' de 5'; }
+  else { stateLabel = 'Bajando'; stepHeadline = 'Paso ' + absP + ' de 5'; }
+  const floatStatusBg = pos === 0 ? '#2c2f33' : pos > 0 ? '#8f1f1f' : '#7a4010';
+  const disabledStyle = 'opacity:0.35;pointer-events:none;';
+  const max = 5;
   return {
     racks, symbolRows, stateLabel, stepHeadline,
     subirDisabled: pos >= max, bajarDisabled: pos <= -max,
@@ -220,7 +314,7 @@ function computeSimP(pos) {
 }
 
 // =============================================
-// 3. NAVEGACIÓN Y ACCIONES
+// 4. NAVEGACIÓN Y ACCIONES
 // =============================================
 function navigateTo(view) { state.view = view; render(); }
 function goBack() { navigateTo('menu'); }
@@ -235,187 +329,60 @@ function handlePanel(panel, label) {
   if ((crane.ready || []).includes(panel)) navigateTo(panel);
   else alert('El módulo "' + label + '" para ' + crane.name + ' aún no está disponible.');
 }
-function simSubir() { if(state.view === 'gancho-principal' && state.posP < 6) { state.posP += 1; render(); } }
-function simBajar() { if(state.view === 'gancho-principal' && state.posP > -6) { state.posP -= 1; render(); } }
-function simNeutro() { if(state.view === 'gancho-principal') { state.posP = 0; render(); } }
+function simSubirP() { if(state.view === 'gancho-principal' && state.posP < 6) { state.posP += 1; render(); } }
+function simBajarP() { if(state.view === 'gancho-principal' && state.posP > -6) { state.posP -= 1; render(); } }
+function simNeutroP() { if(state.view === 'gancho-principal') { state.posP = 0; render(); } }
+function simSubirA() { if(state.view === 'gancho-auxiliar' && state.posA < 5) { state.posA += 1; render(); } }
+function simBajarA() { if(state.view === 'gancho-auxiliar' && state.posA > -5) { state.posA -= 1; render(); } }
+function simNeutroA() { if(state.view === 'gancho-auxiliar') { state.posA = 0; render(); } }
 
 // =============================================
-// 4. RENDERIZADO HTML
+// 5. RENDERIZADO HTML
 // =============================================
 function render() {
-  console.log('Renderizando aplicación...');
   const app = document.getElementById('app');
-  if(!app) return console.error('¡Error! No se encontró el elemento #app');
-  
+  if(!app) return;
   const { view, craneIndex } = state;
   const crane = CRANES[craneIndex];
-  if(!crane) return console.error('Grúa no encontrada en índice', craneIndex);
-
+  if(!crane) return;
   if (view === 'menu') app.innerHTML = renderMenu(crane, craneIndex);
-  else if (view === 'gancho-principal') app.innerHTML = renderSimulador(crane);
-  else app.innerHTML = `<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:#1a1f2e;">
-      <div style="font-size:32px;color:#e8894a;margin-bottom:10px;">🚧</div>
-      <h2 style="margin:0;font-size:22px;font-weight:800;">Módulo en construcción</h2>
-      <button onclick="goBack()" style="margin-top:20px;padding:10px 20px;background:#e8894a;color:#fff;border:none;border-radius:8px;font-weight:bold;">Volver</button>
-    </div>`;
+  else if (view === 'gancho-principal') app.innerHTML = renderSimuladorP(crane);
+  else if (view === 'gancho-auxiliar') app.innerHTML = renderSimuladorA(crane);
+  else app.innerHTML = `<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:#1a1f2e;"><div style="font-size:32px;color:#e8894a;margin-bottom:10px;">🚧</div><h2 style="margin:0;font-size:22px;font-weight:800;">Módulo en construcción</h2><button onclick="goBack()" style="margin-top:20px;padding:10px 20px;background:#e8894a;color:#fff;border:none;border-radius:8px;font-weight:bold;">Volver</button></div>`;
 }
-
 function renderMenu(crane, idx) {
   const total = CRANES.length;
   const ready = crane.ready || [];
   const dotsHtml = CRANES.map((_, i) => `<div class="dot ${i === idx ? 'active' : ''}" style="width:${i===idx?10:7}px;height:${i===idx?10:7}px;"></div>`).join('');
-  return `
-    <div class="menu-screen">
-      <div class="menu-title">Puente Grúa</div>
-      <h1 class="menu-h1">GruaHelper</h1>
-      <div class="menu-sub">v0.2 Vanilla</div>
-      <div class="crane-name-badge">${crane.name}</div>
-      <div class="menu-content">
-        <div class="menu-svg-wrapper">
-          <svg viewBox="0 0 380 415" xmlns="http://www.w3.org/2000/svg">
-            <rect onclick="handlePanel('panel-puente','Panel Puente')" x="14" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect>
-            <text x="52" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text>
-            <text x="52" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PUENTE</text>
-            <rect onclick="handlePanel('panel-carro','Panel Carro')" x="102" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect>
-            <text x="140" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text>
-            <text x="140" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">CARRO</text>
-            <rect onclick="handlePanel('gancho-auxiliar','Gancho Auxiliar')" x="190" y="80" width="76" height="155" rx="6" fill="${ready.includes('gancho-auxiliar') ? '#e8894a' : '#c07030'}" style="cursor:pointer;filter:drop-shadow(0 0 6px rgba(232,137,74,0.4));"></rect>
-            <text x="228" y="160" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text>
-            <text x="228" y="174" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">AUXILIAR</text>
-            <circle cx="228" cy="136" r="10" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle>
-            <text x="228" y="141" text-anchor="middle" font-size="12" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-auxiliar') ? '✓' : '…'}</text>
-            <rect onclick="handlePanel('gancho-principal','Gancho Principal')" x="278" y="44" width="88" height="191" rx="6" fill="#e8894a" style="cursor:pointer;filter:drop-shadow(0 0 8px rgba(232,137,74,0.55));"></rect>
-            <text x="322" y="136" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text>
-            <text x="322" y="152" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PRINCIPAL</text>
-            <circle cx="322" cy="112" r="12" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle>
-            <text x="322" y="117" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-principal') ? '✓' : '…'}</text>
-            <rect x="8" y="235" width="364" height="22" rx="3" fill="#1e3a7a"></rect>
-            <rect x="8" y="255" width="364" height="8" rx="2" fill="#162d5e"></rect>
-            <polygon points="152,263 228,263 210,310 170,310" fill="#1e3a7a"></polygon>
-            <polygon points="155,263 225,263 207,308 173,308" fill="#25489a"></polygon>
-            <line x1="190" y1="310" x2="190" y2="340" stroke="#3b5bdb" stroke-width="3"></line>
-            <polygon points="190,340 214,365 190,390 166,365" fill="#1e3a7a"></polygon>
-            <polygon points="190,343 211,365 190,387 169,365" fill="#25489a"></polygon>
-            <line x1="190" y1="390" x2="190" y2="406" stroke="#3b5bdb" stroke-width="3"></line>
-            <path d="M190,406 Q190,415 202,415 Q214,415 214,404 Q214,396 207,394" fill="none" stroke="#e0e7ff" stroke-width="3.5" stroke-linecap="round"></path>
-          </svg>
-        </div>
-        <div class="menu-controls">
-          <button class="arrow-btn ${idx <= 0 ? 'disabled' : ''}" onclick="switchCrane(-1)">
-            <svg width="32" height="32" viewBox="0 0 24 24"><path fill="white" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-          </button>
-          <div class="dots-container">${dotsHtml}</div>
-          <button class="arrow-btn ${idx >= total - 1 ? 'disabled' : ''}" onclick="switchCrane(1)">
-            <svg width="32" height="32" viewBox="0 0 24 24"><path fill="white" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-          </button>
-        </div>
-        <p class="menu-footer">Toca un panel para abrir su simulador</p>
-      </div>
-    </div>
-  `;
+  return `<div class="menu-screen"><div class="menu-title">Puente Grúa</div><h1 class="menu-h1">GruaHelper</h1><div class="menu-sub">v0.2 Vanilla</div><div class="crane-name-badge">${crane.name}</div><div class="menu-content"><div class="menu-svg-wrapper"><svg viewBox="0 0 380 415" xmlns="http://www.w3.org/2000/svg"><rect onclick="handlePanel('panel-puente','Panel Puente')" x="14" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect><text x="52" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text><text x="52" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PUENTE</text><rect onclick="handlePanel('panel-carro','Panel Carro')" x="102" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect><text x="140" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text><text x="140" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">CARRO</text><rect onclick="handlePanel('gancho-auxiliar','Gancho Auxiliar')" x="190" y="80" width="76" height="155" rx="6" fill="${ready.includes('gancho-auxiliar') ? '#e8894a' : '#c07030'}" style="cursor:pointer;"></rect><text x="228" y="160" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text><text x="228" y="174" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">AUXILIAR</text><circle cx="228" cy="136" r="10" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle><text x="228" y="141" text-anchor="middle" font-size="12" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-auxiliar') ? '✓' : '…'}</text><rect onclick="handlePanel('gancho-principal','Gancho Principal')" x="278" y="44" width="88" height="191" rx="6" fill="#e8894a" style="cursor:pointer;"></rect><text x="322" y="136" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text><text x="322" y="152" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PRINCIPAL</text><circle cx="322" cy="112" r="12" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle><text x="322" y="117" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-principal') ? '✓' : '…'}</text><rect x="8" y="235" width="364" height="22" rx="3" fill="#1e3a7a"></rect><rect x="8" y="255" width="364" height="8" rx="2" fill="#162d5e"></rect><polygon points="152,263 228,263 210,310 170,310" fill="#1e3a7a"></polygon><polygon points="155,263 225,263 207,308 173,308" fill="#25489a"></polygon><line x1="190" y1="310" x2="190" y2="340" stroke="#3b5bdb" stroke-width="3"></line><polygon points="190,340 214,365 190,390 166,365" fill="#1e3a7a"></polygon><polygon points="190,343 211,365 190,387 169,365" fill="#25489a"></polygon><line x1="190" y1="390" x2="190" y2="406" stroke="#3b5bdb" stroke-width="3"></line><path d="M190,406 Q190,415 202,415 Q214,415 214,404 Q214,396 207,394" fill="none" stroke="#e0e7ff" stroke-width="3.5" stroke-linecap="round"></path></svg></div><div class="menu-controls"><button class="arrow-btn ${idx <= 0 ? 'disabled' : ''}" onclick="switchCrane(-1)"><svg width="32" height="32" viewBox="0 0 24 24"><path fill="white" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button><div class="dots-container">${dotsHtml}</div><button class="arrow-btn ${idx >= total - 1 ? 'disabled' : ''}" onclick="switchCrane(1)"><svg width="32" height="32" viewBox="0 0 24 24"><path fill="white" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button></div><p class="menu-footer">Toca un panel para abrir su simulador</p></div></div>`;
 }
-
-function renderSimulador(crane) {
+function renderSimuladorP(crane) {
   const sim = computeSimP(state.posP);
-  const rackHtml = sim.racks.map(rack => `
-    <div class="rack-card">
-      <div class="rack-code">${rack.code}</div>
-      <div class="rack-title">${rack.title1}<br>${rack.title2}</div>
-      <div class="rack-container">
-        <div style="position:relative;height:${rack.stackHeight}px;">
-          ${rack.boxes.map(b => `
-            <div class="box-row" style="top:${b.rowTop}px;">
-              <div class="box-spacer"></div>
-              <div class="box-wrapper" title="BOX NO. ${b.num}">
-                <div class="pin-common pin-left">${b.pinL}</div>
-                <div class="pin-common pin-right">${b.pinR}</div>
-                ${b.hasMid ? `<div class="pin-mid">${b.midPin}</div>` : ''}
-                <div class="box-label" style="${b.style}">BOX NO. ${b.num}</div>
-                <div class="box-terms">
-                  <span>${b.termL}</span>
-                  ${b.hasMid ? `<span>${b.midTerm}</span>` : ''}
-                  <span>${b.termR}</span>
-                </div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        <div style="height:78px;"></div>
-      </div>
-    </div>
-  `).join('');
-
-  const symbolHtml = sim.symbolRows.map(row => `
-    <div class="status-row ${row.rowClass}">
-      <div class="status-cell" style="font-weight:700;">${row.symbol}</div>
-      <div class="status-cell">${row.mark}</div>
-    </div>
-  `).join('');
-
-  return `
-    <div class="sim-screen">
-      <div class="sim-header">
-        <button class="back-btn" onclick="goBack()">
-          <svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-        </button>
-        <span class="sim-header-title">Gancho Principal</span>
-        <span class="sim-header-crane">${crane.name}</span>
-      </div>
-      <div class="sim-content">
-        <div class="sim-top-title"><h1>Simulador Gancho Principal</h1><p>Rack #1 a Rack #4 · 28 boxes</p></div>
-        <div class="racks-grid">${rackHtml}</div>
-        <div class="status-panel">
-          <h2>Panel de estado de contactores</h2>
-          <div class="status-table">
-            <div class="status-header-row"><div class="status-header">Símbolo</div><div class="status-header">Estado</div></div>
-            ${symbolHtml}
-          </div>
-        </div>
-        <div class="legend-box">
-          <div class="legend-item"><span class="legend-swatch white"></span>Resistencia en corto</div>
-          <div class="legend-item"><span class="legend-swatch red"></span>Corriente circulando</div>
-          <div class="legend-item"><span class="legend-swatch blue"></span>Paño de frenado dinámico</div>
-        </div>
-      </div>
-      <div class="float-control">
-        <div class="float-status ${state.posP === 0 ? 'neutral' : state.posP > 0 ? 'up' : 'down'}" style="background:${sim.floatStatusBg};">
-          <div class="float-status-label">${sim.stateLabel}</div>
-          <div class="float-status-headline">${sim.stepHeadline}</div>
-        </div>
-        <div class="float-grid">
-          <div class="float-col-left">
-            <button class="float-btn up ${sim.subirDisabled ? 'disabled' : ''}" onclick="simSubir()">
-              <svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M12 4l-8 8h5v8h6v-8h5z"/></svg>
-            </button>
-            <button class="float-btn down ${sim.bajarDisabled ? 'disabled' : ''}" onclick="simBajar()">
-              <svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M12 20l8-8h-5V4H9v8H4z"/></svg>
-            </button>
-          </div>
-          <div class="float-col-right">
-            <div class="float-step-box"><span class="float-step-text">${sim.floatStepLabel}</span></div>
-            <button class="float-neutro-btn" onclick="simNeutro()">
-              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
+  const rackHtml = sim.racks.map(rack => `<div class="rack-card"><div class="rack-code">${rack.code}</div><div class="rack-title">${rack.title1}<br>${rack.title2}</div><div class="rack-container"><div style="position:relative;height:${rack.stackHeight}px;">${rack.boxes.map(b => `<div class="box-row" style="top:${b.rowTop}px;height:${64 + (b.hasMid ? 20 : 0)}px;"><div class="box-spacer"></div><div class="box-wrapper" title="BOX NO. ${b.num}"><div class="pin-common pin-left">${b.pinL}</div><div class="pin-common pin-right">${b.pinR}</div><div class="box-label" style="${b.style}">BOX NO. ${b.num}</div><div class="box-terms"><span>${b.termL}</span><span>${b.termR}</span></div>${b.hasMid ? `<div class="mid-tap" style="left:${b.num === 18 ? `calc(${b.midPct}% + 10px)` : `${b.midPct}%`};"><span class="mid-tap-label">${b.midTerm}</span><div class="pin-mid">${b.midPin}</div></div>` : ''}</div></div>`).join('')}</div><div style="height:78px;"></div></div></div>`).join('');
+  const symbolHtml = sim.symbolRows.map(row => `<div class="status-row ${row.rowClass}"><div class="status-cell" style="font-weight:700;">${row.symbol}</div><div class="status-cell">${row.mark}</div></div>`).join('');
+  return `<div class="sim-screen"><div class="sim-header"><button class="back-btn" onclick="goBack()"><svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><span class="sim-header-title">Gancho Principal</span><span class="sim-header-crane">${crane.name}</span></div><div class="sim-content"><div class="sim-top-title"><h1>Simulador Gancho Principal</h1><p>Rack #1 a Rack #4 · 28 boxes</p></div><div class="racks-grid">${rackHtml}</div><div class="status-panel"><h2>Panel de estado de contactores</h2><div class="status-table"><div class="status-header-row"><div class="status-header">Símbolo</div><div class="status-header">Estado</div></div>${symbolHtml}</div></div><div class="legend-box"><div class="legend-item"><span class="legend-swatch white"></span>Resistencia en corto</div><div class="legend-item"><span class="legend-swatch red"></span>Corriente circulando</div><div class="legend-item"><span class="legend-swatch blue"></span>Paño de frenado dinámico</div></div></div><div class="float-control"><div class="float-status ${state.posP === 0 ? 'neutral' : state.posP > 0 ? 'up' : 'down'}" style="background:${sim.floatStatusBg};"><div class="float-status-label">${sim.stateLabel}</div><div class="float-status-headline">${sim.stepHeadline}</div></div><div class="float-grid"><div class="float-col-left"><button class="float-btn up ${sim.subirDisabled ? 'disabled' : ''}" onclick="simSubirP()"><svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M12 4l-8 8h5v8h6v-8h5z"/></svg></button><button class="float-btn down ${sim.bajarDisabled ? 'disabled' : ''}" onclick="simBajarP()"><svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M12 20l8-8h-5V4H9v8H4z"/></svg></button></div><div class="float-col-right"><div class="float-step-box"><span class="float-step-text">${sim.floatStepLabel}</span></div><button class="float-neutro-btn" onclick="simNeutroP()"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></button></div></div></div></div>`;
+}
+function renderSimuladorA(crane) {
+  const sim = computeSimA(state.posA);
+  const rackHtml = sim.racks.map(rack => `<div class="rack-card"><div class="rack-code">${rack.code}</div><div class="rack-title">${rack.title1}<br>${rack.title2}</div><div class="rack-container"><div style="position:relative;height:${rack.stackHeight}px;">${rack.boxes.map(b => `<div class="box-row" style="top:${b.rowTop}px;height:${64 + (b.hasMid ? 20 : 0)}px;"><div class="box-spacer"></div><div class="box-wrapper" title="BOX NO. ${b.num}"><div class="pin-common pin-left">${b.pinL}</div><div class="pin-common pin-right">${b.pinR}</div><div class="box-label" style="${b.style}">BOX NO. ${b.num}</div><div class="box-terms"><span>${b.termL}</span><span>${b.termR}</span></div>${b.hasMid ? `<div class="mid-tap" style="left:${b.num === 18 ? `calc(${b.midPct}% + 10px)` : `${b.midPct}%`};"><span class="mid-tap-label">${b.midTerm}</span><div class="pin-mid">${b.midPin}</div></div>` : ''}</div></div>`).join('')}</div><div style="height:78px;"></div></div></div>`).join('');
+  const symbolHtml = sim.symbolRows.map(row => `<div class="status-row ${row.rowClass}"><div class="status-cell" style="font-weight:700;">${row.symbol}</div><div class="status-cell">${row.mark}</div></div>`).join('');
+  return `<div class="sim-screen"><div class="sim-header"><button class="back-btn" onclick="goBack()"><svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button><span class="sim-header-title">Gancho Auxiliar</span><span class="sim-header-crane">${crane.name}</span></div><div class="sim-content"><div class="sim-top-title"><h1>Simulador Gancho Auxiliar</h1><p>Rack #1 a Rack #3 · 20 boxes</p></div><div class="racks-grid">${rackHtml}</div><div class="status-panel"><h2>Panel de estado de contactores</h2><div class="status-table"><div class="status-header-row"><div class="status-header">Símbolo</div><div class="status-header">Estado</div></div>${symbolHtml}</div></div><div class="legend-box"><div class="legend-item"><span class="legend-swatch white"></span>Resistencia en corto</div><div class="legend-item"><span class="legend-swatch red"></span>Corriente circulando</div><div class="legend-item"><span class="legend-swatch blue"></span>Paño de frenado dinámico</div></div></div><div class="float-control"><div class="float-status ${state.posA === 0 ? 'neutral' : state.posA > 0 ? 'up' : 'down'}" style="background:${sim.floatStatusBg};"><div class="float-status-label">${sim.stateLabel}</div><div class="float-status-headline">${sim.stepHeadline}</div></div><div class="float-grid"><div class="float-col-left"><button class="float-btn up ${sim.subirDisabled ? 'disabled' : ''}" onclick="simSubirA()"><svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M12 4l-8 8h5v8h6v-8h5z"/></svg></button><button class="float-btn down ${sim.bajarDisabled ? 'disabled' : ''}" onclick="simBajarA()"><svg width="28" height="28" viewBox="0 0 24 24"><path fill="white" d="M12 20l8-8h-5V4H9v8H4z"/></svg></button></div><div class="float-col-right"><div class="float-step-box"><span class="float-step-text">${sim.floatStepLabel}</span></div><button class="float-neutro-btn" onclick="simNeutroA()"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg></button></div></div></div></div>`;
 }
 
 // =============================================
-// 5. ARRANQUE SEGURO
+// 6. ARRANQUE SEGURO
 // =============================================
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('Página cargada, iniciando render...');
   render();
-  // Exponer funciones para los eventos onclick del HTML
   window.goBack = goBack;
   window.switchCrane = switchCrane;
   window.handlePanel = handlePanel;
-  window.simSubir = simSubir;
-  window.simBajar = simBajar;
-  window.simNeutro = simNeutro;
+  window.simSubirP = simSubirP;
+  window.simBajarP = simBajarP;
+  window.simNeutroP = simNeutroP;
+  window.simSubirA = simSubirA;
+  window.simBajarA = simBajarA;
+  window.simNeutroA = simNeutroA;
 });
 
 // Registro del Service Worker (funcionamiento offline + instalación como app)
