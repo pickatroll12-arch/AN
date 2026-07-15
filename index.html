@@ -228,6 +228,45 @@ function computeSimP(pos) {
       const hasMid = !!t.midPin;
       const midPct = hasMid ? midPinPercent(t) : 50;
 
+      // === Box 12: Subir ===
+      if (n === 12) {
+        if (pos === 1) {
+          // Subir 1: completamente rojo
+          style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid #8f1f1f;min-height:30px;box-sizing:border-box;background:#d32f2f;color:#fff;`;
+        } else if (pos === 2) {
+          // Subir 2: degradado invertido (rojo derecha, blanco izquierda) hasta R2
+          style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to left, #d32f2f ${100 - midPct}%, #ffffff ${100 - midPct}%); color: #111;`;
+        } else if (pos >= 3) {
+          // Subir 3,4,5,6: completamente blanco
+          style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background:#ffffff;color:#111;`;
+        }
+      }
+
+      // === Boxes 24-28: Bajar 1 ===
+      if (pos === -1) {
+        if (n >= 24 && n <= 27) {
+          style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background:#1565c0;color:#fff;`;
+        } else if (n === 28) {
+          const midPct28 = ((t.midPin - t.pinL) / (t.pinR - t.pinL)) * 100;
+          style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to left, #1565c0 ${100 - midPct28}%, #ffffff ${100 - midPct28}%); color: #111;`;
+        }
+      }
+
+      // === Box 12: Bajar 2,3,4 ===
+      if (n === 12 && pos <= -2 && pos >= -4) {
+        style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background:#ffffff;color:#111;`;
+      }
+
+      // === Box 27: Bajar 2,3,4,5 (degradado azul de izquierda a derecha hasta R9 pin 3) ===
+      if (n === 27 && pos <= -2 && pos >= -5) {
+        style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to right, #1565c0 ${midPct}%, #ffffff ${midPct}%); color: #111;`;
+      }
+
+      // === Boxes 1-23: Bajar 5,6 (rojo) ===
+      if (pos <= -5 && n >= 1 && n <= 23) {
+        style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid #8f1f1f;min-height:30px;box-sizing:border-box;background:#d32f2f;color:#fff;`;
+      }
+
       boxes.push({
         num: n, rowTop: cursorY,
         pinL: t.pinL, pinR: t.pinR, termL: t.termL, termR: t.termR,
@@ -274,6 +313,34 @@ function computeSimA(pos) {
       const hasMid = !!t.midPin;
       const midPct = hasMid ? midPinPercent(t) : 50;
 
+      // === Punto 2 bajar (pos = -2) ===
+      if (pos === -2) {
+        if (n === 7) {
+          // Box 7: rojo hacia la derecha hasta R2 (pin 3)
+          style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to right, #ffffff ${midPct}%, #d32f2f ${midPct}%); color: #111;`;
+        }
+        if (n === 19) {
+          // Box 19: azul hacia la derecha hasta R9 (pin 7)
+          style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to right, #ffffff ${midPct}%, #1565c0 ${midPct}%); color: #111;`;
+        }
+      }
+
+      // === Puntos 3 y 4 bajar: Box 19 se mantiene azul hacia la derecha ===
+      if ((pos === -3 || pos === -4) && n === 19) {
+        style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to right, #ffffff ${midPct}%, #1565c0 ${midPct}%); color: #111;`;
+      }
+
+      // === Punto 3 bajar (pos = -3): Box 7 rojo de izquierda a derecha hasta R2 ===
+      if (pos === -3 && n === 7) {
+        style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to right, #d32f2f ${midPct}%, #ffffff ${midPct}%); color: #111;`;
+      }
+
+      // === Punto 5 bajar (pos = -5): Box 18 azul de izquierda a derecha hasta R8 (pin 2) ===
+      if (pos === -5 && n === 18) {
+        style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to right, #1565c0 ${midPct}%, #ffffff ${midPct}%); color: #111;`;
+      }
+
+      // === Degradados originales del paso -1 (se mantienen) ===
       if (pos === -1 && hasMid) {
         if (n === 7) {
           style = `display:flex;align-items:center;justify-content:center;padding:8px 6px;border-radius:4px;font-weight:800;font-size:11px;border:2px solid ${v.border};min-height:30px;box-sizing:border-box;background: linear-gradient(to right, #ffffff ${midPct}%, #d32f2f ${midPct}%); color: #111;`;
