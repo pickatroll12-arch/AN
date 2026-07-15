@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gruahelper-v3';
+const CACHE_NAME = 'gruahelper-v4';
 const APP_SHELL = [
   '/index.html',
   '/manifest.json',
