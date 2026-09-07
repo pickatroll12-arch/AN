@@ -1,14 +1,14 @@
-const CACHE_NAME = 'gruahelper-v18-boton-no-autoclear';
+const CACHE_NAME = 'gruahelper-v19-relpaths';
 const APP_SHELL = [
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png',
-  '/icons/icon-maskable-192.png',
-  '/icons/icon-maskable-512.png',
-  '/icons/apple-touch-icon.png',
-  '/icons/favicon-32.png',
-  '/icons/favicon-16.png'
+  './index.html',
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-maskable-192.png',
+  './icons/icon-maskable-512.png',
+  './icons/apple-touch-icon.png',
+  './icons/favicon-32.png',
+  './icons/favicon-16.png'
 ];
 
 self.addEventListener('install', function(event) {
