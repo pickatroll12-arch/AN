@@ -1,0 +1,14 @@
+[0.00->12.88] Ya, hay un tema ahí con el db, hay un error, la bobina como tal del contactor db se energiza
+[12.88->23.40] a través de h, el contactor h ya tiene a su vez un contacto auxiliar que se alimenta
+[23.40->34.32] de la línea 6, mh6 y esa energiza a la bobina del contactor h durante toda la secuencia de
+[34.32->42.32] su vida, ya durante toda la secuencia de su vida la bobina del db se energiza a través
+[42.32->58.92] de h y durante la secuencia de bajada lo hace a través del 2L, ya del 2L, cuando 2L se energiza
+[58.92->71.64] a través de un contacto auxiliar del 2L se energiza la bobina del db por eso es a partir
+[71.64->85.76] del 2L en bajada, la bobina del db cierra circuito con el negativo a través de la línea 26 hacia
+[85.76->102.56] de la izquierda la línea 51 lo conecta con un contacto normalmente cerrado de sí mismo y hacia el
+[102.56->112.72] contacto normal abierto del h a saber con la línea 31, línea 26 cierra con negativo, línea
+[112.72->119.72] 51 hacia un contacto normalmente cerrado de sí mismo del db y luego línea 31 está en
+[119.72->120.76] normal abierto del h
+
+--- TEXTO COMPLETO ---
+ Ya, hay un tema ahí con el db, hay un error, la bobina como tal del contactor db se energiza  a través de h, el contactor h ya tiene a su vez un contacto auxiliar que se alimenta  de la línea 6, mh6 y esa energiza a la bobina del contactor h durante toda la secuencia de  su vida, ya durante toda la secuencia de su vida la bobina del db se energiza a través  de h y durante la secuencia de bajada lo hace a través del 2L, ya del 2L, cuando 2L se energiza  a través de un contacto auxiliar del 2L se energiza la bobina del db por eso es a partir  del 2L en bajada, la bobina del db cierra circuito con el negativo a través de la línea 26 hacia  de la izquierda la línea 51 lo conecta con un contacto normalmente cerrado de sí mismo y hacia el  contacto normal abierto del h a saber con la línea 31, línea 26 cierra con negativo, línea  51 hacia un contacto normalmente cerrado de sí mismo del db y luego línea 31 está en  normal abierto del h 

@@ -1,0 +1,11 @@
+[0.00->8.64] también, continuación, en secuencia subida como te dije para que esté un
+[8.64->14.08] contanto tiene que anteceder lo otro, para que esté el 2A tiene que estar el 1A, para
+[14.08->17.92] que esté el 3A tiene que estar el 2A, para que esté el 4A tiene que estar el 3A
+[17.92->22.08] y en caso de gancho principal para que esté el 5A tiene que estar el 4A
+[22.08->33.04] antes cerrado, y y y aparte de eso el contacto de H que es de subida, ese tiene
+[33.04->38.48] que estar si o si, entonces eso es las condiciones lógicas, si no tienes una
+[38.48->43.84] tienes que devolver al anterior para que se cumpla, en subida es mucho más simple
+[43.84->48.64] detectar falla, en cuanto a la secuencia
+
+--- TEXTO COMPLETO ---
+ también, continuación, en secuencia subida como te dije para que esté un  contanto tiene que anteceder lo otro, para que esté el 2A tiene que estar el 1A, para  que esté el 3A tiene que estar el 2A, para que esté el 4A tiene que estar el 3A  y en caso de gancho principal para que esté el 5A tiene que estar el 4A  antes cerrado, y y y aparte de eso el contacto de H que es de subida, ese tiene  que estar si o si, entonces eso es las condiciones lógicas, si no tienes una  tienes que devolver al anterior para que se cumpla, en subida es mucho más simple  detectar falla, en cuanto a la secuencia 

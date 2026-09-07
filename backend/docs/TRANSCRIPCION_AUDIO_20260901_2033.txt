@@ -1,0 +1,30 @@
+[0.00 -> 9.00] Mira puntualmente, el simulador le dice en las mismas consultas, en varias oportunidades
+[10.00 -> 16.00] Le buce que el contactor 2 ano entraba en el segundo punto de su vida
+[17.00 -> 25.00] Entonces como estructura, medio 3 hipótesis que sí son válidas
+[26.00 -> 35.00] Pero se esfuerza mucho en buscar algo a la primera, o sea en darme la respuesta de manera inicial
+[36.00 -> 40.00] Un hipótesis 1 me dijo falla de alimentación en la bobina del contactor 2A
+[41.00 -> 49.00] El hipótesis 2 me dice el contacto 2A mecánicamente dañado o no hace contacto físico
+[50.00 -> 54.00] La tercera hipótesis dice el límite de su vida está activado
+[55.00 -> 60.00] O sea parcialmente lo que bloquea la lógica su vida y fuerza la conexión en serie para bajar
+[61.00 -> 69.00] Si y no, la última hipótesis creo que el tema del límite lo mencioné para que esté como dato
+[70.00 -> 74.00] Sin embargo, no permitiría ningún movimiento en su vida, ninguno
+[75.00 -> 80.00] No es que solamente un contactor de jefe fuera sino que ningún movimiento en su vida
+[80.00 -> 83.00] Entonces coincidió que las dos primeras hipótesis están bien
+[84.00 -> 91.00] Pero debería solicitar más información para poder volver a responder y no intentar hacerlo toda la primera
+[92.00 -> 98.00] Como decía ir escalando, entonces me solicita información pendiente
+[99.00 -> 103.00] Se ha verificado que el contacto anterior de la secuencia de su vida esté cerrado cuartamente
+[104.00 -> 107.00] Ya hay recalco que falta preguntar si el 1A está cerrado
+[107.00 -> 112.00] Si el contacto 1A está cerrado y su contacto auxiliar está cerrado
+[113.00 -> 118.00] Luego pregunta si enfeccionaba visualmente el contacto doble para escartar su ciudad de gasto
+[119.00 -> 122.00] Sí, está bien, está bien como una solicitud de información
+[123.00 -> 133.00] Y la tercera también va por el mismo camino y el motor responde a mandos de bajada entre paréntesis y jogging
+[133.00 -> 140.00] O está completamente inactivo, pero es importante que pregunte también si solamente funciona
+[141.00 -> 146.00] O no funciona este caso en la secuencia de su vida o hubo pedas de bajada, eso es importante
+[147.00 -> 157.00] Entonces, siguiendo por esa misma senda tiene que pedir más información para poder complementarla
+[157.00 -> 167.00] Entonces como te decía que pida o solicite verificar la secuencia de control
+[168.00 -> 175.00] Y insista en sí solamente para subir o también no funciona en bajada
+[176.00 -> 180.00] Según eso abre el abanico de posibilidades y eso es lo que tenemos que empezar a hacer ahora
+[181.00 -> 186.00] Ir capa por capa viendo que implica para poder darle más profundidad a una falla
+
+--- TEXTO COMPLETO ---
+ Mira puntualmente, el simulador le dice en las mismas consultas, en varias oportunidades  Le buce que el contactor 2 ano entraba en el segundo punto de su vida  Entonces como estructura, medio 3 hipótesis que sí son válidas  Pero se esfuerza mucho en buscar algo a la primera, o sea en darme la respuesta de manera inicial  Un hipótesis 1 me dijo falla de alimentación en la bobina del contactor 2A  El hipótesis 2 me dice el contacto 2A mecánicamente dañado o no hace contacto físico  La tercera hipótesis dice el límite de su vida está activado  O sea parcialmente lo que bloquea la lógica su vida y fuerza la conexión en serie para bajar  Si y no, la última hipótesis creo que el tema del límite lo mencioné para que esté como dato  Sin embargo, no permitiría ningún movimiento en su vida, ninguno  No es que solamente un contactor de jefe fuera sino que ningún movimiento en su vida  Entonces coincidió que las dos primeras hipótesis están bien  Pero debería solicitar más información para poder volver a responder y no intentar hacerlo toda la primera  Como decía ir escalando, entonces me solicita información pendiente  Se ha verificado que el contacto anterior de la secuencia de su vida esté cerrado cuartamente  Ya hay recalco que falta preguntar si el 1A está cerrado  Si el contacto 1A está cerrado y su contacto auxiliar está cerrado  Luego pregunta si enfeccionaba visualmente el contacto doble para escartar su ciudad de gasto  Sí, está bien, está bien como una solicitud de información  Y la tercera también va por el mismo camino y el motor responde a mandos de bajada entre paréntesis y jogging  O está completamente inactivo, pero es importante que pregunte también si solamente funciona  O no funciona este caso en la secuencia de su vida o hubo pedas de bajada, eso es importante  Entonces, siguiendo por esa misma senda tiene que pedir más información para poder complementarla  Entonces como te decía que pida o solicite verificar la secuencia de control  Y insista en sí solamente para subir o también no funciona en bajada  Según eso abre el abanico de posibilidades y eso es lo que tenemos que empezar a hacer ahora  Ir capa por capa viendo que implica para poder darle más profundidad a una falla 

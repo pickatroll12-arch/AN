@@ -1,0 +1,5 @@
+Fuente: C:\Users\PC2B\Documents\Audios\WhatsApp Ptt 2026-09-07 at 12.45.25.ogg (transcripto con faster-whisper small, 2026-09-07)
+Complemento visual: C:\Users\PC2B\Documents\imagenes\Captura.JPG (tabla frames 602-616)
+
+Transcripcion:
+"Otra aclaracion mas, la grua 1, el gancho principal, el frame de esta es un 616, ya, es un 616, el gancho auxiliar de la grua 1, el gancho auxiliar de la grua 1 es un 614, ya, un 614 y los motores del puente, la grua 1, son 2 motores de puente, son unos 612, ya, y el motor del carro es un 606. En el caso de la grua 2 y 3, que es mas pequeno, mas pequeno los motores, gancho principal es un 614, gancho auxiliar es un 612, y el motor del puente es un 608, y el motor del carro es un 606."

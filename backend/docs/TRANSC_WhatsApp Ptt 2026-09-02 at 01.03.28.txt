@@ -1,0 +1,21 @@
+[0.00->9.00] El modelo 4B iba muy bien cuando me habló desde que un contacto anterior
+[9.00->16.00] debía estar presente para que 5A cerrara en bajada
+[16.00->24.00] y según el cuadro secuencia es solamente los puntos 1 y 2 bajadas
+[25.00->30.00] Después yo le dije que no tenía energía en la obina de 5A
+[30.00->35.00] y ahí como que no supo que responderme
+[35.00->41.00] Luego le volví a entregar otra información
+[41.00->48.00] le dije que tampoco tenía voltaje en los contactos auxiliar del contacto al 4A
+[48.00->55.00] Entonces se sube, entiende que para que esté el 5A debe estar antes el 4A
+[55.00->64.00] y para que esté el 4A según la secuencia de contacto
+[64.00->70.00] el 4A y el 5A están presentes los primeros dos puntos
+[70.00->75.00] el 4A persiste un monto más hasta el tercero
+[75.00->83.00] pero la alimentación desde el máster principal
+[83.00->88.00] que base a la obina de 5A
+[88.00->94.00] viene por la línea 13
+[94.00->96.00] del máster de control
+[96.00->102.00] y esa línea 13 se ve interrumpida solamente por el contacto auxiliar del 4A
+[102.00->107.00] Entonces si no tengo voltaje en el contacto auxiliar del 4A
+[107.00->112.00] quiere decir que no está llegando desde el máster principal
+
+--- TEXTO COMPLETO ---
+ El modelo 4B iba muy bien cuando me habló desde que un contacto anterior  debía estar presente para que 5A cerrara en bajada  y según el cuadro secuencia es solamente los puntos 1 y 2 bajadas  Después yo le dije que no tenía energía en la obina de 5A  y ahí como que no supo que responderme  Luego le volví a entregar otra información  le dije que tampoco tenía voltaje en los contactos auxiliar del contacto al 4A  Entonces se sube, entiende que para que esté el 5A debe estar antes el 4A  y para que esté el 4A según la secuencia de contacto  el 4A y el 5A están presentes los primeros dos puntos  el 4A persiste un monto más hasta el tercero  pero la alimentación desde el máster principal  que base a la obina de 5A  viene por la línea 13  del máster de control  y esa línea 13 se ve interrumpida solamente por el contacto auxiliar del 4A  Entonces si no tengo voltaje en el contacto auxiliar del 4A  quiere decir que no está llegando desde el máster principal 

@@ -125,6 +125,37 @@
     .plano-modal-img-wrap { width: 100%; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; touch-action: none; }
     .plano-modal-img { max-width: 900px; width: 100%; height: auto; transform-origin: center center; user-select: none; -webkit-user-drag: none; cursor: grab; }
     .plano-modal-img.dragging { cursor: grabbing; }
+    .assistant-screen { min-height:100vh; background:#f5f6f7; color:#232629; display:flex; flex-direction:column; }
+    .assistant-header { background:#1a1f2e; color:#fff; padding:18px 16px 16px; display:flex; align-items:center; gap:12px; }
+    .assistant-header .back-btn { background:rgba(255,255,255,.14); border:0; border-radius:8px; width:38px; height:38px; display:grid; place-items:center; }
+    .assistant-body { width:min(880px,100%); box-sizing:border-box; margin:0 auto; padding:20px 16px 44px; }
+    .assistant-hero { background:linear-gradient(135deg,#1a1f2e,#34445e); color:#fff; border-radius:16px; padding:20px; box-shadow:0 8px 20px rgba(26,31,46,.18); }
+    .assistant-hero h1 { margin:0 0 7px; font-size:23px; }
+    .assistant-hero p { margin:0; line-height:1.45; color:#e5e7eb; font-size:14px; }
+    .assistant-context { margin-top:16px; padding:14px; border:1px solid #d9dee5; border-radius:12px; background:#fff; }
+    .assistant-context h2 { margin:0 0 9px; font-size:14px; }
+    .assistant-context-grid { display:flex; flex-wrap:wrap; gap:8px; }
+    .assistant-chip { background:#edf2f7; color:#334155; border-radius:999px; padding:6px 9px; font-size:12px; font-weight:700; }
+    .assistant-notice { margin:16px 0; border-left:4px solid #e8894a; background:#fff7ed; color:#7c2d12; padding:12px 14px; border-radius:8px; font-size:13px; line-height:1.45; }
+    .assistant-card { background:#fff; border:1px solid #d9dee5; border-radius:12px; padding:16px; margin-top:14px; }
+    .assistant-card h2 { margin:0 0 10px; font-size:16px; }
+    .assistant-question { width:100%; box-sizing:border-box; min-height:108px; resize:vertical; border:1px solid #aeb8c5; border-radius:10px; padding:12px; font:inherit; color:#232629; line-height:1.45; }
+    .assistant-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:10px; }
+    .assistant-primary, .assistant-secondary { border:0; border-radius:9px; padding:10px 14px; font:inherit; font-weight:800; cursor:pointer; }
+    .assistant-primary { background:#e8894a; color:#fff; }
+    .assistant-primary:disabled { opacity:.6; cursor:wait; }
+    .assistant-secondary { background:#e9eef4; color:#26384d; }
+    .assistant-result { margin-top:14px; }
+    .assistant-result.hidden { display:none; }
+    .assistant-result section { border-top:1px solid #e5e7eb; padding:12px 0; }
+    .assistant-result section:first-child { border-top:0; padding-top:0; }
+    .assistant-result h3 { margin:0 0 7px; font-size:14px; color:#26384d; }
+    .assistant-result p, .assistant-result li { font-size:13px; line-height:1.5; }
+    .assistant-result p { margin:0; }
+    .assistant-result ul { margin:7px 0 0; padding-left:20px; }
+    .assistant-mode { display:inline-flex; margin-bottom:10px; font-size:11px; font-weight:800; color:#166534; background:#dcfce7; border-radius:999px; padding:5px 8px; }
+    .assistant-error { color:#991b1b; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:10px; font-size:13px; }
+    @media (max-width:480px) { .assistant-body { padding:16px 12px 32px; } .assistant-hero { border-radius:12px; } }
   </style>
 </head>
 <body>
@@ -213,7 +244,18 @@ const A_RACKS = [
 ];
 const A_SYMBOLS = ['M','H','DB','1L','2L','3L','1A','2A','3A','4A'];
 
-const state = { view: 'menu', craneIndex: 0, posP: 0, posA: 0 };
+const state = { view: 'menu', craneIndex: 0, posP: 0, posA: 0, assistantScope: 'consulta general' };
+
+// Configuración del Asistente Técnico.
+// IMPORTANTE: la clave de la API NUNCA debe colocarse en este archivo ni en el navegador.
+// Backend local Ollama wrapper: cubre brecha stateless (memoria + RAG). Cambia OLLAMA_MODEL en backend/.env para otro modelo.
+const ASSISTANT_CONFIG = {
+  enabled: true,
+  endpoint: 'https://rigging-squishier-crystal.ngrok-free.dev/api/diagnostico',
+  timeoutMs: 120000
+};
+
+const ASSISTANT_SAFETY_NOTICE = 'Este asistente es una herramienta de consulta y capacitación. No controla equipos ni sustituye procedimientos vigentes.';
 
 // =============================================
 // 2. LÓGICA DE ESTADO Y TRANSICIONES
@@ -416,8 +458,232 @@ function computeSimA(pos) {
 // =============================================
 // 4. NAVEGACIÓN Y ACCIONES
 // =============================================
+function getAssistantSessionId() {
+  try {
+    let sid = sessionStorage.getItem('gh_session');
+    if (!sid) { sid = 'gh-'+Date.now()+'-'+Math.random().toString(36).slice(2); sessionStorage.setItem('gh_session', sid); }
+    return sid;
+  } catch(e) { return 'default'; }
+}
 function navigateTo(view) { state.view = view; render(); }
 function goBack() { navigateTo('menu'); }
+function openAssistant() { navigateTo('asistente-tecnico'); }
+function setAssistantCrane(idx) { state.craneIndex = idx; try{ sessionStorage.setItem('gh_session','gh-'+Date.now()+'-'+Math.random().toString(36).slice(2)); }catch(e){} render(); }
+function setAssistantScope(scope) { state.assistantScope = scope; try{ sessionStorage.setItem('gh_session','gh-'+Date.now()+'-'+Math.random().toString(36).slice(2)); }catch(e){} render(); }
+
+function assistantEscape(value) {
+  return String(value || '').replace(/[&<>'"]/g, function(char) {
+    return ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', "'":'&#39;', '"':'&quot;' })[char];
+  });
+}
+
+function getAssistantContext() {
+  const crane = CRANES[state.craneIndex] || { name: 'No seleccionada' };
+  const scope = state.assistantScope || 'consulta general';
+  // mapea scope seleccionado a nombre de módulo y estado físico
+  let moduleName = 'Consulta general';
+  let position = 0;
+  let contacts = {};
+  if (scope === 'gancho principal') { moduleName = 'Gancho principal'; position = state.posP; contacts = pClosedMap(state.posP); }
+  else if (scope === 'gancho auxiliar') { moduleName = 'Gancho auxiliar'; position = state.posA; contacts = aClosedMap(state.posA); }
+  else if (scope === 'carro') { moduleName = 'Carro'; }
+  else if (scope === 'avance') { moduleName = 'Avance'; }
+  else if (scope === 'puente') { moduleName = 'Puente'; }
+  else { moduleName = 'Consulta general'; }
+  // fallback: si el usuario no ha tocado el filtro y está dentro de un simulador, usa la vista actual
+  if (scope === 'consulta general' && (state.view === 'gancho-principal' || state.view === 'gancho-auxiliar')) {
+    // mantiene consulta general salvo que el filtro esté en general; no sobre-escribe si ya hay filtro explícito
+  }
+  const activeContacts = Object.keys(contacts).filter(function(key) { return contacts[key]; });
+  return {
+    crane: crane.name,
+    module: moduleName,
+    simulatorView: state.view,
+    assistantScope: scope,
+    position: position,
+    activeContacts: activeContacts
+  };
+}
+
+function assistantContextLabel(context) {
+  const positionText = context.module === 'Consulta general' ? 'Sin estado de simulación' : (context.position === 0 ? 'Neutro' : context.position > 0 ? 'Subir, paso ' + context.position : 'Bajar, paso ' + Math.abs(context.position));
+  return {
+    crane: context.crane,
+    module: context.module,
+    position: positionText,
+    contacts: context.activeContacts.length ? context.activeContacts.join(', ') : 'Ninguno'
+  };
+}
+
+function buildDemoAssistantResponse(question, context) {
+  const text = String(question || '').toLowerCase();
+  const labels = assistantContextLabel(context);
+  const hasRaise = /sub|eleva|elevar|arriba/.test(text);
+  const hasLower = /baj|descend/.test(text);
+  const hasContactor = /contactor|contacto|rel[eé]/.test(text);
+  const hasEmergency = /emergencia|paro|protecci|freno|final de carrera|enclav/.test(text);
+  const situation = context.module === 'Consulta general'
+    ? 'No hay un módulo del simulador seleccionado; la respuesta se limita a una orientación general.'
+    : 'El simulador indica: ' + labels.module + ', ' + labels.position + '. Contactos activos: ' + labels.contacts + '.';
+  let hypotheses = [];
+  if (hasEmergency) hypotheses.push('La consulta involucra una condición de seguridad o protección; debe validarse el procedimiento aplicable antes de cualquier intervención.');
+  if (hasRaise) hypotheses.push('Para una condición de elevación, conviene confirmar la cadena de habilitación, los enclavamientos y el estado de los contactos asociados antes de atribuir una causa.');
+  if (hasLower) hypotheses.push('Para una condición de descenso, conviene contrastar el estado de frenado dinámico, los contactos de descenso y los límites operativos indicados por el procedimiento.');
+  if (hasContactor) hypotheses.push('Si un contactor no cambia de estado, la causa puede estar en la orden de mando, una condición de habilitación, la bobina o el circuito asociado; se requiere evidencia antes de confirmarlo.');
+  if (!hypotheses.length) hypotheses.push('La información proporcionada no permite confirmar una causa. El siguiente paso es precisar el síntoma, el equipo afectado y las verificaciones ya realizadas.');
+  const questions = [
+    '¿Cuál es el síntoma observable y en qué momento ocurre?',
+    '¿Qué verificaciones seguras ya fueron realizadas y cuál fue su resultado?',
+    '¿Qué manual, plano o procedimiento vigente aplica a esta grúa?'
+  ];
+  return {
+    mode: 'API local Ollama (qwen3.5-4b)',
+    summary: 'Orientación inicial generada con el contexto del simulador y base documental indexada.',
+    facts: [situation, 'Consulta recibida: “' + String(question || '').trim() + '”'],
+    hypotheses: hypotheses,
+    questions: questions,
+    safety: ASSISTANT_SAFETY_NOTICE,
+    sources: ['Base documental indexada: CASOS_EMPERICOS_ORGANIZADOS + CARBONES_FALLAS_TIPICAS + MOTORES_Y_RESISTENCIAS + pdfs_txt (75 docs)']
+  };
+}
+
+function renderAssistantResponse(response) {
+  const result = document.getElementById('assistantResult');
+  if (!result) return;
+  const list = function(items) { return '<ul>' + (items || []).map(function(item) { return '<li>' + assistantEscape(item) + '</li>'; }).join('') + '</ul>'; };
+  result.classList.remove('hidden');
+  result.innerHTML = '<div class="assistant-mode">' + assistantEscape(response.mode || 'Asistente técnico') + '</div>' +
+    '<section><h3>Resumen</h3><p>' + assistantEscape(response.summary || '') + '</p></section>' +
+    '<section><h3>Información confirmada</h3>' + list(response.facts) + '</section>' +
+    '<section><h3>Hipótesis iniciales</h3>' + list(response.hypotheses) + '</section>' +
+    '<section><h3>Información pendiente</h3>' + list(response.questions) + '</section>' +
+    '<section><h3>Seguridad y escalamiento</h3><p>' + assistantEscape(response.safety || ASSISTANT_SAFETY_NOTICE) + '</p></section>' +
+    '<section><h3>Fuentes</h3>' + list(response.sources) + '</section>';
+}
+
+async function askAssistant() {
+  const questionInput = document.getElementById('assistantQuestion');
+  const button = document.getElementById('assistantAskButton');
+  const error = document.getElementById('assistantError');
+  const result = document.getElementById('assistantResult');
+  if (!questionInput || !button) return;
+  const question = questionInput.value.trim();
+  if (!question) {
+    if (error) { error.textContent = 'Describe una consulta o un síntoma para continuar.'; error.classList.remove('hidden'); }
+    return;
+  }
+  if (error) error.classList.add('hidden');
+  const context = getAssistantContext();
+  const sessionId = getAssistantSessionId();
+  button.disabled = true;
+  button.textContent = 'Analizando…';
+  // habilita streaming: muestra tokens mientras llegan
+  let streamEndpoint = ASSISTANT_CONFIG.endpoint;
+  if (streamEndpoint && streamEndpoint.indexOf('/api/diagnostico') !== -1) {
+    streamEndpoint = streamEndpoint.replace('/api/diagnostico', '/api/diagnostico/stream');
+  }
+  try {
+    if (ASSISTANT_CONFIG.enabled && ASSISTANT_CONFIG.endpoint) {
+      const controller = new AbortController();
+      const timer = setTimeout(function() { controller.abort(); }, ASSISTANT_CONFIG.timeoutMs);
+      // intenta streaming primero
+      let usedStream = false;
+      try {
+        const streamResp = await fetch(streamEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+          signal: controller.signal,
+          body: JSON.stringify({ question: question, context: context, sessionId: sessionId })
+        });
+        if (streamResp.ok && streamResp.body && streamResp.headers.get('content-type') && streamResp.headers.get('content-type').indexOf('text/event-stream') !== -1) {
+          usedStream = true;
+          if (result) {
+            result.classList.remove('hidden');
+            result.innerHTML = '<div class="assistant-mode">API local Ollama (qwen3.5-4b) · thinking</div><section style="text-align:center;padding:24px 12px;"><div style="display:inline-flex;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:999px;padding:10px 18px;"><span style="width:10px;height:10px;border-radius:50%;background:#e8894a;animation:pulse 1.5s infinite;display:inline-block;"></span><span id="assistantThinkingText" style="font-size:13px;color:#334155;font-weight:600;">Pensando</span><span id="assistantThinkingDots" style="font-size:13px;color:#334155;letter-spacing:2px;"></span></div><p style="font-size:11px;color:#64748b;margin-top:10px;">Analizando tu caso con la base documental (75 docs)…</p></section><style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.9)}} @keyframes dots{0%{content:\"\"}25%{content:\".\"}50%{content:\"..\"}75%{content:\"...\"}}</style>';
+            // animación puntos suspensivos
+            let dotInt = setInterval(function(){ const d=document.getElementById('assistantThinkingDots'); if(d) d.textContent = d.textContent.length>=3 ? '' : d.textContent+'.'; }, 400);
+            // guarda para limpiar
+            window._thinkingDotInt = dotInt;
+          }
+          const reader = streamResp.body.getReader();
+          const decoder = new TextDecoder('utf-8');
+          let buffer = '';
+          let fullText = '';
+          let finalPayload = null;
+          while (true) {
+            const chunk = await reader.read();
+            if (chunk.done) break;
+            buffer += decoder.decode(chunk.value, {stream:true});
+            const parts = buffer.split('\n\n');
+            buffer = parts.pop();
+            for (const part of parts) {
+              if (part.indexOf('data:') === 0) {
+                const jsonStr = part.slice(5).trim();
+                if (!jsonStr) continue;
+                try {
+                  const evt = JSON.parse(jsonStr);
+                  if (evt.token) {
+                    fullText += evt.token;
+                    // no muestra crudo, solo mantiene thinking
+                  }
+                  if (evt.done && evt.final) {
+                    finalPayload = evt.final;
+                  }
+                  if (evt.done && evt.error) throw new Error(evt.error);
+                } catch(e) {}
+              }
+            }
+          }
+          if (window._thinkingDotInt) { clearInterval(window._thinkingDotInt); window._thinkingDotInt=null; }
+          clearTimeout(timer);
+          if (finalPayload) {
+            renderAssistantResponse(finalPayload);
+          } else if (fullText) {
+            try {
+              const parsed = JSON.parse(fullText);
+              renderAssistantResponse(parsed);
+            } catch(e) {
+              if (error) { error.textContent = 'Respuesta incompleta, revisa el streaming crudo arriba.'; error.classList.remove('hidden'); }
+            }
+          }
+        }
+      } catch(streamErr) {
+        // si streaming falla, fallback a no-stream
+        if (!usedStream) throw streamErr;
+      }
+      if (!usedStream) {
+        const response = await fetch(ASSISTANT_CONFIG.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
+          signal: controller.signal,
+          body: JSON.stringify({ question: question, context: context, sessionId: sessionId })
+        });
+        clearTimeout(timer);
+        if (!response.ok) throw new Error('El servicio devolvió el estado ' + response.status + '.');
+        const payload = await response.json();
+        renderAssistantResponse(payload);
+      } else {
+        clearTimeout(timer);
+      }
+    } else {
+      renderAssistantResponse(buildDemoAssistantResponse(question, context));
+    }
+  } catch (err) {
+    if (error) {
+      error.textContent = 'No fue posible consultar el servicio. ' + (err && err.message ? err.message : 'Verifica la conexión y la configuración del endpoint.');
+      error.classList.remove('hidden');
+    }
+  } finally {
+    button.disabled = false;
+    button.textContent = 'Consultar asistente';
+  }
+}
+
+function clearAssistantQuestion(){ const input=document.getElementById('assistantQuestion'); if(input){ input.value=''; input.focus(); } }
+function loadAssistantExample(example) {
+  const input = document.getElementById('assistantQuestion');
+  if (input) { input.value = example; input.focus(); }
+}
 function switchCrane(dir) {
   const n = state.craneIndex + dir;
   if (n < 0 || n >= CRANES.length) return;
@@ -595,7 +861,15 @@ function render() {
   else if (view === 'gancho-auxiliar') app.innerHTML = renderSimuladorA(crane);
   else if (view === 'panel-puente') app.innerHTML = renderPanelSoloPlano(crane, 'Panel Puente');
   else if (view === 'panel-carro') app.innerHTML = renderPanelSoloPlano(crane, 'Panel Carro');
+  else if (view === 'asistente-tecnico') app.innerHTML = renderAssistantScreen(crane);
   else app.innerHTML = `<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:#1a1f2e;"><div style="font-size:32px;color:#e8894a;margin-bottom:10px;">🚧</div><h2 style="margin:0;font-size:22px;font-weight:800;">Módulo en construcción</h2><button onclick="goBack()" style="margin-top:20px;padding:10px 20px;background:#e8894a;color:#fff;border:none;border-radius:8px;font-weight:bold;">Volver</button></div>`;
+}
+
+function renderAssistantScreen(crane) {
+  const ctx = getAssistantContext();
+  const craneIdx = state.craneIndex;
+  const scope = state.assistantScope || 'consulta general';
+  return `<div class="assistant-screen"><div class="assistant-header"><button class="back-btn" onclick="goBack()" aria-label="Volver"><svg width="22" height="22" viewBox="0 0 16 16"><path fill="#fff" d="M7 1.5V4h2.5c3 0 5 2.13 5 5.25 0 3.25-4 4.75-4 4.75s1.87-2.65 1.44-4C11.57 8.87 10.36 8 9 8H7v2.5L.5 6z"/></svg></button><div><strong>Asistente Técnico</strong><div style="font-size:12px;color:#cbd5e1;margin-top:2px;">GruaHelper · ${assistantEscape(crane.name)}</div></div></div><main class="assistant-body"><section class="assistant-hero"><h1>Consulta técnica asistida</h1><p>Describe un síntoma o pregunta por el comportamiento mostrado en el simulador. El asistente organiza la información, no reemplaza la validación técnica.</p></section><section class="assistant-context"><h2>Contexto enviado al asistente</h2><div class="assistant-context-grid"><label style="position:relative;display:inline-flex;align-items:center;"><select onchange="setAssistantCrane(parseInt(this.value,10))" style="appearance:none;-webkit-appearance:none;background:#edf2f7;color:#334155;border:1px solid #cbd5e1;border-radius:999px;padding:7px 26px 7px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;outline:none;"><option value="0" ${craneIdx===0?'selected':''}>GRÚA 1</option><option value="1" ${craneIdx===1?'selected':''}>GRÚA 2</option><option value="2" ${craneIdx===2?'selected':''}>GRÚA 3</option></select><span style="position:absolute;right:10px;pointer-events:none;font-size:9px;color:#334155;">▼</span></label><label style="position:relative;display:inline-flex;align-items:center;"><select onchange="setAssistantScope(this.value)" style="appearance:none;-webkit-appearance:none;background:#edf2f7;color:#334155;border:1px solid #cbd5e1;border-radius:999px;padding:7px 26px 7px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;outline:none;"><option value="consulta general" ${scope==='consulta general'?'selected':''}>Consulta general</option><option value="gancho principal" ${scope==='gancho principal'?'selected':''}>Gancho principal</option><option value="gancho auxiliar" ${scope==='gancho auxiliar'?'selected':''}>Gancho auxiliar</option><option value="carro" ${scope==='carro'?'selected':''}>Carro</option><option value="avance" ${scope==='avance'?'selected':''}>Avance</option></select><span style="position:absolute;right:10px;pointer-events:none;font-size:9px;color:#334155;">▼</span></label></div></section><div class="assistant-notice"><strong>Uso seguro:</strong> ${assistantEscape(ASSISTANT_SAFETY_NOTICE)}</div><section class="assistant-card"><h2>¿Qué deseas consultar?</h2><div style="position:relative;"><textarea id="assistantQuestion" class="assistant-question" placeholder="Describe el síntoma tal como lo ves: grúa, movimiento, posición, qué contactor no cierra y qué has medido." style="padding-right:36px;"></textarea><button onclick="clearAssistantQuestion()" title="Borrar" style="position:absolute;top:8px;right:8px;width:26px;height:26px;border:0;border-radius:50%;background:#e2e8f0;color:#334155;font-size:18px;line-height:1;cursor:pointer;">×</button></div><div class="assistant-actions"><button id="assistantAskButton" class="assistant-primary" onclick="askAssistant()">Consultar asistente</button><button onclick="clearAssistantQuestion()" style="margin-left:8px;padding:10px 14px;border:1px solid #cbd5e1;background:#fff;color:#334155;border-radius:999px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;">Borrar</button></div><p style="font-size:11px;color:#64748b;margin-top:8px;">Grúa analógica 40/60s - sin códigos, sin panel de errores, sin interfaz. Grúa 2 aún no operativa. Filtro activo: ${assistantEscape(ctx.crane)} · ${assistantEscape(ctx.module)}</p><div id="assistantError" class="assistant-error hidden" style="margin-top:12px;"></div><div id="assistantResult" class="assistant-result hidden"></div></section></main></div>`;
 }
 function renderPanelSoloPlano(crane, title) {
   return `<div class="sim-screen"><div class="sim-header"><button class="back-btn" onclick="goBack()"><svg width="22" height="22" viewBox="0 0 16 16"><path fill="#232629" d="M7 1.5V4h2.5c3 0 5 2.13 5 5.25 0 3.25-4 4.75-4 4.75s1.87-2.65 1.44-4C11.57 8.87 10.36 8 9 8H7v2.5L.5 6z"/></svg></button><span class="sim-header-title">${title}</span><span class="sim-header-crane">${crane.name}</span></div><div class="sim-content"><div class="sim-top-title"><h1>${title}</h1><p>Simulador interactivo en desarrollo</p></div><div class="status-panel" style="text-align:center;padding:40px 16px;"><p style="color:#6e7173;font-size:13px;line-height:1.5;">El simulador paso a paso de este panel todavía no está disponible.<br>Por ahora puedes consultar el plano de referencia con el botón de abajo.</p></div></div><div class="float-control"><div class="float-extra-row"><button class="float-extra-btn" onclick="openPlano()"><span>Plano</span></button><button class="float-extra-btn" onclick="openDisposicionResistencias()"><span>Disposición</span></button></div></div></div>`;
@@ -604,7 +878,7 @@ function renderMenu(crane, idx) {
   const total = CRANES.length;
   const ready = crane.ready || [];
   const dotsHtml = CRANES.map((_, i) => `<div class="dot ${i === idx ? 'active' : ''}" style="width:${i===idx?10:7}px;height:${i===idx?10:7}px;"></div>`).join('');
-  return `<div class="menu-screen"><div class="menu-title">Puente Grúa</div><h1 class="menu-h1">GruaHelper</h1><div class="menu-sub">v0.2 Vanilla</div><div class="crane-name-badge">${crane.name}</div><div class="menu-content"><div class="menu-svg-wrapper"><svg viewBox="0 0 380 415" xmlns="http://www.w3.org/2000/svg"><rect onclick="handlePanel('panel-puente','Panel Puente')" x="14" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect><text x="52" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text><text x="52" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PUENTE</text><rect onclick="handlePanel('panel-carro','Panel Carro')" x="102" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect><text x="140" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text><text x="140" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">CARRO</text><rect onclick="handlePanel('gancho-auxiliar','Gancho Auxiliar')" x="190" y="80" width="76" height="155" rx="6" fill="${ready.includes('gancho-auxiliar') ? '#e8894a' : '#c07030'}" style="cursor:pointer;"></rect><text x="228" y="160" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text><text x="228" y="174" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">AUXILIAR</text><circle cx="228" cy="136" r="10" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle><text x="228" y="141" text-anchor="middle" font-size="12" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-auxiliar') ? '✓' : '…'}</text><rect onclick="handlePanel('gancho-principal','Gancho Principal')" x="278" y="44" width="88" height="191" rx="6" fill="#e8894a" style="cursor:pointer;"></rect><text x="322" y="136" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text><text x="322" y="152" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PRINCIPAL</text><circle cx="322" cy="112" r="12" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle><text x="322" y="117" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-principal') ? '✓' : '…'}</text><rect x="8" y="235" width="364" height="22" rx="3" fill="#1e3a7a"></rect><rect x="8" y="255" width="364" height="8" rx="2" fill="#162d5e"></rect><polygon points="152,263 228,263 210,310 170,310" fill="#1e3a7a"></polygon><polygon points="155,263 225,263 207,308 173,308" fill="#25489a"></polygon><line x1="190" y1="310" x2="190" y2="340" stroke="#3b5bdb" stroke-width="3"></line><polygon points="190,340 214,365 190,390 166,365" fill="#1e3a7a"></polygon><polygon points="190,343 211,365 190,387 169,365" fill="#25489a"></polygon><line x1="190" y1="390" x2="190" y2="406" stroke="#3b5bdb" stroke-width="3"></line><path d="M190,406 Q190,415 202,415 Q214,415 214,404 Q214,396 207,394" fill="none" stroke="#e0e7ff" stroke-width="3.5" stroke-linecap="round"></path></svg></div><div class="menu-controls"><button class="arrow-btn ${idx <= 0 ? 'disabled' : ''}" onclick="switchCrane(-1)"><svg width="24" height="24" viewBox="0 0 16 16"><path fill="#232629" d="M4 5v2h11v2H4v2L0 8z"/></svg></button><div class="dots-container">${dotsHtml}</div><button class="arrow-btn ${idx >= total - 1 ? 'disabled' : ''}" onclick="switchCrane(1)"><svg width="24" height="24" viewBox="0 0 16 16"><path fill="#232629" d="M12 5v2H1v2h11v2l4-3z"/></svg></button></div><p class="menu-footer">Toca un panel para abrir su simulador</p></div></div>`;
+  return `<div class="menu-screen"><div class="menu-title">Puente Grúa</div><h1 class="menu-h1">GruaHelper</h1><div class="menu-sub">v0.2 Vanilla</div><div class="crane-name-badge">${crane.name}</div><button onclick="openAssistant()" style="margin:12px auto 0;display:flex;align-items:center;gap:7px;padding:9px 14px;border:0;border-radius:999px;background:#26384d;color:#fff;font:inherit;font-size:12px;font-weight:800;box-shadow:0 4px 10px rgba(0,0,0,.16);cursor:pointer;">✦ Asistente Técnico</button><div class="menu-content"><div class="menu-svg-wrapper"><svg viewBox="0 0 380 415" xmlns="http://www.w3.org/2000/svg"><rect onclick="handlePanel('panel-puente','Panel Puente')" x="14" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect><text x="52" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text><text x="52" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PUENTE</text><rect onclick="handlePanel('panel-carro','Panel Carro')" x="102" y="80" width="76" height="155" rx="6" fill="#e8894a" style="cursor:pointer;"></rect><text x="140" y="166" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PANEL</text><text x="140" y="180" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">CARRO</text><rect onclick="handlePanel('gancho-auxiliar','Gancho Auxiliar')" x="190" y="80" width="76" height="155" rx="6" fill="${ready.includes('gancho-auxiliar') ? '#e8894a' : '#c07030'}" style="cursor:pointer;"></rect><text x="228" y="160" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text><text x="228" y="174" text-anchor="middle" font-size="10" font-weight="800" fill="#fff" pointer-events="none">AUXILIAR</text><circle cx="228" cy="136" r="10" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle><text x="228" y="141" text-anchor="middle" font-size="12" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-auxiliar') ? '✓' : '…'}</text><rect onclick="handlePanel('gancho-principal','Gancho Principal')" x="278" y="44" width="88" height="191" rx="6" fill="#e8894a" style="cursor:pointer;"></rect><text x="322" y="136" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">GANCHO</text><text x="322" y="152" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" pointer-events="none">PRINCIPAL</text><circle cx="322" cy="112" r="12" fill="rgba(255,255,255,0.2)" pointer-events="none"></circle><text x="322" y="117" text-anchor="middle" font-size="14" font-weight="900" fill="#fff" pointer-events="none">${ready.includes('gancho-principal') ? '✓' : '…'}</text><rect x="8" y="235" width="364" height="22" rx="3" fill="#1e3a7a"></rect><rect x="8" y="255" width="364" height="8" rx="2" fill="#162d5e"></rect><polygon points="152,263 228,263 210,310 170,310" fill="#1e3a7a"></polygon><polygon points="155,263 225,263 207,308 173,308" fill="#25489a"></polygon><line x1="190" y1="310" x2="190" y2="340" stroke="#3b5bdb" stroke-width="3"></line><polygon points="190,340 214,365 190,390 166,365" fill="#1e3a7a"></polygon><polygon points="190,343 211,365 190,387 169,365" fill="#25489a"></polygon><line x1="190" y1="390" x2="190" y2="406" stroke="#3b5bdb" stroke-width="3"></line><path d="M190,406 Q190,415 202,415 Q214,415 214,404 Q214,396 207,394" fill="none" stroke="#e0e7ff" stroke-width="3.5" stroke-linecap="round"></path></svg></div><div class="menu-controls"><button class="arrow-btn ${idx <= 0 ? 'disabled' : ''}" onclick="switchCrane(-1)"><svg width="24" height="24" viewBox="0 0 16 16"><path fill="#232629" d="M4 5v2h11v2H4v2L0 8z"/></svg></button><div class="dots-container">${dotsHtml}</div><button class="arrow-btn ${idx >= total - 1 ? 'disabled' : ''}" onclick="switchCrane(1)"><svg width="24" height="24" viewBox="0 0 16 16"><path fill="#232629" d="M12 5v2H1v2h11v2l4-3z"/></svg></button></div><p class="menu-footer">Toca un panel para abrir su simulador</p></div></div>`;
 }
 function renderSimuladorP(crane) {
   const sim = computeSimP(state.posP);
@@ -625,6 +899,11 @@ function renderSimuladorA(crane) {
 document.addEventListener('DOMContentLoaded', function() {
   render();
   window.goBack = goBack;
+  window.openAssistant = openAssistant;
+  window.setAssistantCrane = setAssistantCrane;
+  window.setAssistantScope = setAssistantScope;
+  window.askAssistant = askAssistant;
+  window.loadAssistantExample = loadAssistantExample;
   window.switchCrane = switchCrane;
   window.handlePanel = handlePanel;
   window.simSubirP = simSubirP;

@@ -1,0 +1,21 @@
+[0.00->9.00] Ya, una falla no muy común, pero sí compleja, la secuencia bajada es cuando frenado dinámico
+[9.00->21.68] se abre, puede ser porque se rompió una interconexión en el paño de resistencia o porque el contactor
+[21.68->32.44] 2L o 3L se dañó, ya sea el contacto de gore bañado en plata o el chunt que hace la conducción
+[32.44->44.28] o directamente el conductor que va desde el contactor hacia la resistencia, el VR se asegura
+[44.28->49.40] de que esto no suceda en el último punto porque es el más crítico, sin embargo puede pasar
+[49.40->58.04] adelante, el siento más es que al darle bajar la grúa se acelera demasiado, se sobre revoluciona
+[58.04->71.48] porque la armadura queda circuito abierto, no hay una limitante que evite que tome velocidad,
+[71.48->80.20] esto puede ser porque falló el contactor 2L en el caso de los puntos más bajos, el 3L en el
+[80.20->89.20] caso del punto final, ya sea gancho principal o auxiliar es el punto final, el el contactor
+[89.20->99.36] 3L embajado o daño en el paño de resistencia frenado dinámico que se compone de R7, R8,
+[99.36->112.84] R9 y R10, es una falla rebuscada y para descartarla hay que ver en qué secuencia, en qué punto
+[112.84->123.00] de bajada está dando problemas, siempre embajada, si es a partir del punto 2 es porque se rompió
+[123.00->130.60] la conexión asociada al 2L y hacia los conductores o el punto de conexión a resistencia que sería
+[130.60->142.84] el R9 y del otro lado del contacto fuerza R11, si es en el primer punto de bajada generalmente
+[142.84->152.76] va asociado que está rota la línea en el R7 o R10 y otras tantas veces en la conexión
+[152.76->160.84] del Db, ya primer punto de bajada y ya cuando es en el último punto de bajada que sucede
+[160.84->168.08] es directamente por el 3L y hacia su conexión al paño frenado dinámico a través de R8
+[168.08->170.16] o del otro lado a través de R1.
+
+--- TEXTO COMPLETO ---
+ Ya, una falla no muy común, pero sí compleja, la secuencia bajada es cuando frenado dinámico  se abre, puede ser porque se rompió una interconexión en el paño de resistencia o porque el contactor  2L o 3L se dañó, ya sea el contacto de gore bañado en plata o el chunt que hace la conducción  o directamente el conductor que va desde el contactor hacia la resistencia, el VR se asegura  de que esto no suceda en el último punto porque es el más crítico, sin embargo puede pasar  adelante, el siento más es que al darle bajar la grúa se acelera demasiado, se sobre revoluciona  porque la armadura queda circuito abierto, no hay una limitante que evite que tome velocidad,  esto puede ser porque falló el contactor 2L en el caso de los puntos más bajos, el 3L en el  caso del punto final, ya sea gancho principal o auxiliar es el punto final, el el contactor  3L embajado o daño en el paño de resistencia frenado dinámico que se compone de R7, R8,  R9 y R10, es una falla rebuscada y para descartarla hay que ver en qué secuencia, en qué punto  de bajada está dando problemas, siempre embajada, si es a partir del punto 2 es porque se rompió  la conexión asociada al 2L y hacia los conductores o el punto de conexión a resistencia que sería  el R9 y del otro lado del contacto fuerza R11, si es en el primer punto de bajada generalmente  va asociado que está rota la línea en el R7 o R10 y otras tantas veces en la conexión  del Db, ya primer punto de bajada y ya cuando es en el último punto de bajada que sucede  es directamente por el 3L y hacia su conexión al paño frenado dinámico a través de R8  o del otro lado a través de R1. 

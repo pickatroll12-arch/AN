@@ -1,0 +1,40 @@
+[0.00->9.88] y con la información que le dimos respondió mejor sobre el comportamiento del 5a ya embajada
+[9.88->16.44] ya dejamos claro que su día es una cosa muy simple, embajada es lo complejo
+[16.44->22.28] entonces el 5a depende del 4a, línea 13 ¿verdad?
+[22.28->30.80] a su vez el 4a depende del 3a por la línea 12
+[30.80->41.28] el 3a entra directo, no tiene un contacto auxiliar de cual dependa embajada
+[41.28->46.08] y se activa a través de la línea 10
+[46.08->56.08] el contacto 2a también entra directo, salvo que tiene un contacto auxiliar del DB
+[56.08->61.08] el DB, la secuencia de contacto es solamente está presente en el primer punto o bajar
+[61.08->69.08] luego se abre físicamente, se energiza pero se abre físicamente porque es un contacto lo más cerrado
+[70.08->77.08] cuando se abre físicamente se energiza, su contacto auxiliar normal abierto se cierra
+[77.08->84.08] y el contacto 2a entra por la línea 8a, el 2a
+[87.08->93.08] el contacto 1l también es esencial para la secuencia subida
+[93.08->103.08] y está como condición del contacto 2l
+[103.08->116.08] que también es un contacto de la secuencia bajada correspondiente al paño del frenado dinámico
+[117.08->123.08] entonces 1l se energiza directo a través de la línea 14
+[123.08->128.08] 1l a través directo de la línea 14
+[128.08->138.08] y en el primer punto la línea 14 también energiza automáticamente el contacto
+[138.08->144.08] la bobina de 5a a través del contacto lo más cerrado del DB
+[144.08->151.08] luego en el segundo punto ya es a través del contacto auxiliar del 4a
+[151.08->169.08] ahora otra cosa, en bajada el contacto 2l, 3a, 4a y 5a tienen un retardo
+[169.08->174.08] tienen un retardo de tiempo
+[174.08->182.08] en este caso operan en su vida
+[182.08->186.08] en este caso operan en su vida
+[186.08->190.08] es un time delay, para que la secuencia no entre de golpe
+[190.08->194.08] operan en su vida los time delay
+[195.08->202.08] y pueden estar ajustados en 0,3 o 0,6 segundos
+[207.08->212.08] perdón en 0,6 o 1,2 segundos según cómo estén puenteados sus terminales
+[212.08->215.08] en su vida
+[215.08->219.08] sin embargo en bajada en la secuencia de bajada
+[219.08->225.08] el 3a cierra su circuito a través del contacto normal cerrado del 1a
+[225.08->232.08] el 4a también cierra su circuito con el negativo a través del contacto normal cerrado del 1a
+[232.08->237.08] y el 5a lo hace a través de un contacto normal abierto del 1l
+[237.08->242.08] esto es un encabimiento a seguridad para que por alguna falla eléctrica
+[242.08->247.08] no vaya a ingresar un contacto en un punto que no corresponde
+[247.08->253.08] se asegura esto usando los contactos normal cerrados
+[253.08->256.08] de un contacto que es exclusivo de su vida
+[256.08->261.08] y el 5a a través del contacto exclusivo de bajada que es el 1l
+
+--- TEXTO COMPLETO ---
+ y con la información que le dimos respondió mejor sobre el comportamiento del 5a ya embajada  ya dejamos claro que su día es una cosa muy simple, embajada es lo complejo  entonces el 5a depende del 4a, línea 13 ¿verdad?  a su vez el 4a depende del 3a por la línea 12  el 3a entra directo, no tiene un contacto auxiliar de cual dependa embajada  y se activa a través de la línea 10  el contacto 2a también entra directo, salvo que tiene un contacto auxiliar del DB  el DB, la secuencia de contacto es solamente está presente en el primer punto o bajar  luego se abre físicamente, se energiza pero se abre físicamente porque es un contacto lo más cerrado  cuando se abre físicamente se energiza, su contacto auxiliar normal abierto se cierra  y el contacto 2a entra por la línea 8a, el 2a  el contacto 1l también es esencial para la secuencia subida  y está como condición del contacto 2l  que también es un contacto de la secuencia bajada correspondiente al paño del frenado dinámico  entonces 1l se energiza directo a través de la línea 14  1l a través directo de la línea 14  y en el primer punto la línea 14 también energiza automáticamente el contacto  la bobina de 5a a través del contacto lo más cerrado del DB  luego en el segundo punto ya es a través del contacto auxiliar del 4a  ahora otra cosa, en bajada el contacto 2l, 3a, 4a y 5a tienen un retardo  tienen un retardo de tiempo  en este caso operan en su vida  en este caso operan en su vida  es un time delay, para que la secuencia no entre de golpe  operan en su vida los time delay  y pueden estar ajustados en 0,3 o 0,6 segundos  perdón en 0,6 o 1,2 segundos según cómo estén puenteados sus terminales  en su vida  sin embargo en bajada en la secuencia de bajada  el 3a cierra su circuito a través del contacto normal cerrado del 1a  el 4a también cierra su circuito con el negativo a través del contacto normal cerrado del 1a  y el 5a lo hace a través de un contacto normal abierto del 1l  esto es un encabimiento a seguridad para que por alguna falla eléctrica  no vaya a ingresar un contacto en un punto que no corresponde  se asegura esto usando los contactos normal cerrados  de un contacto que es exclusivo de su vida  y el 5a a través del contacto exclusivo de bajada que es el 1l 

@@ -1,0 +1,9 @@
+[0.00->16.64] Otro más, otra falla habitual social control, más que falla una condición, es que el mismo
+[16.64->24.80] plano de detalle, como nota que si se requiere más torque en el primer punto de su vida
+[24.80->35.60] se debe agregar un jumper, un puente entre 5 y 6 de la bornera, ¿qué hace esto?
+[35.60->43.08] que al puentear los cables 5 y 6, que en el punto 1, en vez de tener solamente MIH, también
+[43.08->51.12] tengo el contactor 1A, se tengo más torque, a veces es útil, a veces trae problemas depende
+[51.12->53.68] de la operación, pero es bueno que lo indique.
+
+--- TEXTO COMPLETO ---
+ Otro más, otra falla habitual social control, más que falla una condición, es que el mismo  plano de detalle, como nota que si se requiere más torque en el primer punto de su vida  se debe agregar un jumper, un puente entre 5 y 6 de la bornera, ¿qué hace esto?  que al puentear los cables 5 y 6, que en el punto 1, en vez de tener solamente MIH, también  tengo el contactor 1A, se tengo más torque, a veces es útil, a veces trae problemas depende  de la operación, pero es bueno que lo indique. 

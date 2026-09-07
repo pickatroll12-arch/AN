@@ -1,0 +1,23 @@
+[0.00->15.00] Entonces resumiendo el DB se energiza en toda la secuencia subida a través de un contacto normal abierto del H ya la línea 6 llega en un contacto normal abierto del H
+[15.00->20.00] luego pasa por la línea 31 ya que hay una conexión
+[21.00->29.00] hay una conexión donde la alimentación hacia la obvina del DB se va por una resistencia
+[29.00->36.00] se va por una resistencia que va en paralelo con un contacto normal cerrado del DB
+[36.00->50.00] Línea 31 llega a un nodo, a ese nodo sale la conexión de la resistencia, sale la conexión del DB
+[50.00->59.00] Un contacto normal cerrado del DB y también llega a un contacto normal cerrado del H
+[60.00->68.00] agua abajo del nomás cerrado del DB recibe bien la conexión de la obvina como tal del DB
+[68.00->75.00] durante toda la secuencia subida se energiza a través de un mal abierto del H
+[75.00->80.00] y por la resistencia energiza la obvina del DB
+[80.00->86.00] cuando está la secuencia bajada se energiza a través del 2L
+[86.00->91.00] un contacto normal abierto del 2L es el que energiza la obvina del DB
+[91.00->96.00] pero la línea que trae esa energía es la línea 7
+[96.00->103.00] la línea 7 pasa por un contacto normal abierto del 1L
+[104.00->109.00] luego llega a un nodo donde está un contacto normal abierto del 2L
+[109.00->115.00] y otro es el 3L y un normal cerrado del H
+[115.00->118.00] que es el que se comunica con la resistencia también
+[118.00->124.00] entonces como el DB siempre debe estar energizado a partir del segundo punto bajar
+[124.00->129.00] cuando hace el cambio del 2L al 3L siempre queda sellado
+[129.00->131.00] que sea por un lado o por otro
+[131.00->134.00] que es la gracia de esa configuración
+
+--- TEXTO COMPLETO ---
+ Entonces resumiendo el DB se energiza en toda la secuencia subida a través de un contacto normal abierto del H ya la línea 6 llega en un contacto normal abierto del H  luego pasa por la línea 31 ya que hay una conexión  hay una conexión donde la alimentación hacia la obvina del DB se va por una resistencia  se va por una resistencia que va en paralelo con un contacto normal cerrado del DB  Línea 31 llega a un nodo, a ese nodo sale la conexión de la resistencia, sale la conexión del DB  Un contacto normal cerrado del DB y también llega a un contacto normal cerrado del H  agua abajo del nomás cerrado del DB recibe bien la conexión de la obvina como tal del DB  durante toda la secuencia subida se energiza a través de un mal abierto del H  y por la resistencia energiza la obvina del DB  cuando está la secuencia bajada se energiza a través del 2L  un contacto normal abierto del 2L es el que energiza la obvina del DB  pero la línea que trae esa energía es la línea 7  la línea 7 pasa por un contacto normal abierto del 1L  luego llega a un nodo donde está un contacto normal abierto del 2L  y otro es el 3L y un normal cerrado del H  que es el que se comunica con la resistencia también  entonces como el DB siempre debe estar energizado a partir del segundo punto bajar  cuando hace el cambio del 2L al 3L siempre queda sellado  que sea por un lado o por otro  que es la gracia de esa configuración 

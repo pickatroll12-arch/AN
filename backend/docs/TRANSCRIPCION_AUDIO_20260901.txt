@@ -1,0 +1,130 @@
+[0.00 -> 11.64] vale mire la idea de esto es entregar unos casos de falla y solución para un puente grúa de corriente
+[11.64 -> 18.56] continua ya entonces yo te voy a ir dictando las diferentes fallas que yo recuerdo a lo largo del
+[18.56 -> 28.76] tiempo y tú las vas transcribiendo como te decía un pdf al final cuando yo te diga entregame el
+[28.76 -> 34.48] documento tú lo generas mientras tanto como dices lo mantiene en el trasfondo
+[36.38 -> 46.94] bueno partiendo por lo principal cualquiera de las dos grúas ya sea grúa 1 2 o 3
+[49.32 -> 57.46] indistintamente del movimiento ya sea carros avances o ganchos
+[58.76 -> 69.44] tiene el punto de contacto con la energía que es el pantógrafo principal ya bajo las grúas hay dos
+[69.44 -> 79.52] barras de cobre qué se proyectan paralela a la nave y estas son las que entregan corriente
+[79.52 -> 88.04] continua la grúa la corriente continua pasa a la grúa a través de unos pantógrafos que son un sistema
+[88.76 -> 95.78] como se me lo dice pantógrafo que se van adaptando a la diferencia entre la grúa y las barras se van
+[95.78 -> 106.20] acercando proyectando según según vaya avanzando la grúa éstas tienen unos carbones que hacen el
+[106.20 -> 113.04] contacto con el cobre con las barras de gore y el principal punto de falla es cuando la grúa no
+[113.04 -> 118.44] tiene movimiento es esto tiene unos tensores unos resortes tensores que a veces se rompen
+[118.76 -> 124.04] de romperse hace que se quede sin energía la grúa
+[124.04 -> 129.72] ese vendría a ser un caso luego siguiendo porque le falta energía
+[129.72 -> 135.58] a la grúa están las paradas de emergencia del sistema de encladamiento
+[135.58 -> 140.08] ya que las grúas son de corriente continua
+[140.08 -> 146.32] a veces se suele usar elementos de alternas que no están preparados para
+[146.32 -> 152.54] para cortar cortar la llama de la corriente continua entonces se van
+[152.54 -> 156.96] dañando se van escorriendo la segunda
+[156.96 -> 163.22] la segunda posibilidad de que la grúa se quede sin energía
+[163.22 -> 169.42] por lo menos el control principal es que ya sea las paradas de emergencia o el
+[169.42 -> 175.90] sistema de encladamiento del switch principal no esté funcionando bien no no
+[175.90 -> 176.30] no está funcionando bien no está funcionando bien no está funcionando bien
+[176.32 -> 181.08] está armando ya
+[181.60 -> 187.52] siguiendo por ese punto que la grúa no tiene energía
+[187.52 -> 194.10] es importante medir es importante medir el voltaje que uno tiene llegando al
+[194.10 -> 201.98] gabinete principal de las grúas ya sea cualquiera de ellas dado que el voltaje
+[201.98 -> 205.90] en corriente continua que se entrega proviene de una rectificadora que se
+[205.90 -> 212.70] encuentra en la sala número 2 esta rectificadora que debería alimentar
+[212.70 -> 218.32] suministrar con un voltaje constante de alrededor de 230 240 por continua
+[218.32 -> 224.90] pero si existe alguna falla en alguna grúa algún corte algo que ya sea daño
+[224.90 -> 231.52] hundido rectificador o algún fusible este voltaje va a caer
+[231.52 -> 234.72] al bajar el voltaje
+[234.72 -> 241.04] el sistema de protección de la grúa que son los uv undervoltage
+[241.04 -> 246.54] esos contactos no van a cerrar y no van a permitir que la grúa trabaje
+[246.54 -> 252.06] entonces es importante siempre medir entre positivo y negativo que está
+[252.06 -> 257.06] llegando a la a su principal de la grúa
+[257.84 -> 263.56] ya saltando un poquito ante cualquier llamado ante cualquier
+[263.56 -> 270.60] falla que indiquen en la grúa lo principal es probar la secuencia
+[270.60 -> 275.60] ya ya sea gancho o carro
+[275.60 -> 281.58] probar la secuencia y que los contactores primero entren hagan el
+[281.58 -> 286.14] cierre mecánico y segundo se estén energizando porque
+[286.14 -> 291.00] puede que veas o se vea que el contacto no está
+[291.00 -> 293.46] cerrando pero quizá no le está llegando
+[293.56 -> 298.00] energía o si le está llegando energía y la uv está dañada
+[298.00 -> 305.52] entonces en prioridad independiente el movimiento ya sea carro avance o ganchos
+[305.52 -> 312.74] la habilidad es probar la secuencia como se hace esto
+[312.74 -> 320.94] se deja el tablero sin fuerza sin fuerza y sólo se prueba control
+[320.94 -> 323.54] se le pide al operador que ejecute la secuencia y que el contacto no se vea
+[323.56 -> 331.32] la secuencia ya sea no sé subir bajar o en caso de los carros y el avance darle
+[331.32 -> 336.62] movimiento y ver que los contactores entre como lo indican los planos
+[336.62 -> 342.84] si los contactores no entran como indican los planos ya queda ver si le
+[342.84 -> 347.78] está llegando energía para eso se puede medir ya sea en la
+[347.78 -> 353.36] bornera que está en cada tablero y que coincide con los planos
+[353.56 -> 359.18] donde desde la línea 1 hasta la línea 20 en el caso de los ganchos
+[359.18 -> 366.90] indica que corresponde cada línea y cada movimiento
+[366.90 -> 378.88] ya aparte de medirlo en la bornera también queda medir en el contactor en
+[378.88 -> 383.32] la bobina como tal del contactor porque como reitero si
+[383.32 -> 387.48] mecánicamente no está ingresando puede que si le esté llegando voltaje
+[387.48 -> 392.04] entonces también es necesario medir para descartar que la bobina esté dañada
+[392.04 -> 401.96] si le llega voltaje a la bobina y este contactor no acciona hay que descartar
+[401.96 -> 407.36] la bobina para eso hay que medirla va a depender según el voltaje son datos
+[407.36 -> 413.20] que daré más adelante pero hay que medir la bobina hay bastantes similares
+[413.32 -> 417.38] según el funcionamiento donde puedes tomar la referencia pero parten en los
+[417.38 -> 424.32] 2,5 kilómetros en el caso de las que son para 250 voltios
+[425.98 -> 435.36] si la secuencia si entra completa ya sea como decía carro avance y o ganchos
+[435.36 -> 440.32] si la secuencia si entra completa entonces queda ver
+[440.32 -> 443.08] fuerza
+[443.32 -> 448.56] dado que son contactores de corriente continua tienen contactos de cobre
+[448.56 -> 456.82] bañados en plata y estos son los que alimentan los motores en los distintos
+[456.82 -> 463.94] movimientos ya que se probó asumiendo que se probó el control y éste está bien
+[463.94 -> 468.24] se le quita por completo la energía a la grúa
+[468.24 -> 472.76] y se levanta las protecciones de los contactores los que extinguen la llama y se levantan las protecciones de los contactores los que extinguen la llama
+[473.32 -> 484.28] los que tienen el arco y se revisan los contactos se mueven se deben mover y se
+[484.28 -> 490.64] deben forzar para ver si estos se salían de buena manera y tiene un
+[490.64 -> 494.54] recorrido adecuado si alguno no está bien si alguno está
+[494.54 -> 500.04] demasiado desgastado quemado va a impedir que el equipo funcione como
+[500.04 -> 502.58] corresponde y debe ser reemplazado por uno de los contactores y los que tienen el arco y se revisan los contactos se mueven se deben mover y se deben forzar para ver si estos se alinean de buena manera y tiene un
+[502.58 -> 513.52] uno del que corresponda, o sea, si es un tip de gancho principal tiene que ser por lo mismo,
+[513.66 -> 518.00] si es de auxiliar también tiene que ser por el que corresponde, lo mismo para carro y
+[518.00 -> 531.48] avance. No se pueden mezclar componentes de distintos tableros. Si el elemento de fuerza
+[531.48 -> 540.50] dentro del tablero también se encuentra bien, ya queda seguir el cableado. Entonces
+[540.50 -> 547.38] en los planos está identificado cada punto de conexión del contactor con respecto al
+[547.38 -> 560.00] exterior, ya sea a los motores, ya sea a los bancos de resistencia y o límites.
+[561.48 -> 568.36] Entonces hay que estar mirando las conexiones dentro del tablero y primero seguirla hacia
+[568.36 -> 574.04] el rack de resistencia, que es lo más cercano. Identificar que estén haciendo buen contacto
+[574.04 -> 582.42] y que no estén escurridas las conexiones. Una vez en el paño de resistencia también
+[582.42 -> 591.46] revisarla. Buscar puntos donde se pueda estar abriendo la resistencia como tal. Si no hay
+[591.48 -> 598.84] un punto donde se puede estar aislando o se puede estar yendo a masa. Por eso es importante
+[598.84 -> 604.92] tener una buena iluminación, llevar linterna, que tenga la suficiente autonomía para poder
+[604.92 -> 613.84] revisar. Si no se encuentra nada, si no se encuentra nada la resistencia y todo al menos
+[613.84 -> 620.18] visualmente está bien, queda ver el otro comportamiento, la parte mecánica.
+[621.48 -> 632.16] Por lo menos en el avance y en los ganchos estos tienen freno. Hay un tambor que gira junto
+[632.16 -> 641.82] con el motor donde el cual se aplica el freno. A veces las fallas de movimiento en los ganchos
+[641.82 -> 650.62] y avances tienen incidencia de freno. Me explico. Dado que son electroimanes,
+[651.48 -> 659.28] dependen de la corriente y el voltaje para operar. Entonces a mayor corriente mayor fuerza
+[659.28 -> 669.36] en el electroimán. Pero si el gap entre el núcleo, la bobina, el freno y el elemento
+[669.36 -> 674.86] que trae es demasiado grande, a bajas corrientes no va a ser capaz de cerrar y no va a liberar
+[674.86 -> 681.46] los tambores. Principalmente esto sucede en los puntos 1 y 2 bajar. La corriente que
+[681.48 -> 688.92] circula por el freno es muy baja y si no está bien ajustado al freno o tiene algún problema este
+[688.92 -> 694.08] no va a liberar o va a liberar uno de los dos. Las grúas tienen generalmente dos frenos por gancho.
+[695.22 -> 701.80] Basta que no libere bien y va a tener problemas y quien no sepa puede atribuirle este fallo a la
+[701.80 -> 709.84] parte eléctrica. Pero es importante que estén bien ajustados los frenos y que se accionen
+[709.84 -> 711.28] idealmente al mismo tiempo cuando se desplazan los tambores. Si se desplazan los tambores,
+[711.28 -> 711.46] se desplazan los tambores. Si se desplazan los tambores, se desplazan los tambores. Si se desplazan los tambores,
+[711.48 -> 717.48] se desplazan los tambores. Si se desplazan los tambores, se desplazan los tambores. Para saber si alguno de los frenos está
+[717.48 -> 722.48] trabajando frenado o algo de la redundancia se debe usar una cámara termográfica.
+[724.14 -> 728.98] Esta va a identificar inmediato, va a arrojar de inmediato si algún tambor se está sobrecalentando
+[728.98 -> 737.94] al trabajar, lo cual indicaría que el freno está mal. Por último y no menor,
+[737.94 -> 744.70] Si los frenos tampoco son los responsables del movimiento
+[744.70 -> 746.24] Ya queda el motor
+[746.24 -> 750.02] Para este entonces ya la grúa está fuera
+[750.02 -> 753.76] Está todo bloqueado según las pautas y los procedimientos
+[753.76 -> 756.12] Y se debe revisar el motor
+[756.12 -> 758.76] Ya es más visual
+[758.76 -> 764.22] Si bien hay instrumentos que permiten medir los motores de corriente continua
+[764.22 -> 766.02] Estos son bastante robustos
+[766.02 -> 767.64] Cuando tienen falla ya es visual
+[767.64 -> 770.14] Presentan alta temperatura
+[770.14 -> 772.78] Presentan pitting en el colector
+[772.78 -> 775.94] Los carbones se quiebran
+[775.94 -> 780.02] Los chundes, los carbones hacia el puerto de escobilla
+[780.02 -> 784.06] Se vuelven de un color violáceo
+[784.06 -> 785.56] O derechamente se rompen
+[785.56 -> 790.02] Ya hay evidencias más obvias
+[790.02 -> 792.86] Del daño que puede tener el motor y el descarte que se debe hacer
+
+--- TEXTO COMPLETO ---
+ vale mire la idea de esto es entregar unos casos de falla y solución para un puente grúa de corriente  continua ya entonces yo te voy a ir dictando las diferentes fallas que yo recuerdo a lo largo del  tiempo y tú las vas transcribiendo como te decía un pdf al final cuando yo te diga entregame el  documento tú lo generas mientras tanto como dices lo mantiene en el trasfondo  bueno partiendo por lo principal cualquiera de las dos grúas ya sea grúa 1 2 o 3  indistintamente del movimiento ya sea carros avances o ganchos  tiene el punto de contacto con la energía que es el pantógrafo principal ya bajo las grúas hay dos  barras de cobre qué se proyectan paralela a la nave y estas son las que entregan corriente  continua la grúa la corriente continua pasa a la grúa a través de unos pantógrafos que son un sistema  como se me lo dice pantógrafo que se van adaptando a la diferencia entre la grúa y las barras se van  acercando proyectando según según vaya avanzando la grúa éstas tienen unos carbones que hacen el  contacto con el cobre con las barras de gore y el principal punto de falla es cuando la grúa no  tiene movimiento es esto tiene unos tensores unos resortes tensores que a veces se rompen  de romperse hace que se quede sin energía la grúa  ese vendría a ser un caso luego siguiendo porque le falta energía  a la grúa están las paradas de emergencia del sistema de encladamiento  ya que las grúas son de corriente continua  a veces se suele usar elementos de alternas que no están preparados para  para cortar cortar la llama de la corriente continua entonces se van  dañando se van escorriendo la segunda  la segunda posibilidad de que la grúa se quede sin energía  por lo menos el control principal es que ya sea las paradas de emergencia o el  sistema de encladamiento del switch principal no esté funcionando bien no no  no está funcionando bien no está funcionando bien no está funcionando bien  está armando ya  siguiendo por ese punto que la grúa no tiene energía  es importante medir es importante medir el voltaje que uno tiene llegando al  gabinete principal de las grúas ya sea cualquiera de ellas dado que el voltaje  en corriente continua que se entrega proviene de una rectificadora que se  encuentra en la sala número 2 esta rectificadora que debería alimentar  suministrar con un voltaje constante de alrededor de 230 240 por continua  pero si existe alguna falla en alguna grúa algún corte algo que ya sea daño  hundido rectificador o algún fusible este voltaje va a caer  al bajar el voltaje  el sistema de protección de la grúa que son los uv undervoltage  esos contactos no van a cerrar y no van a permitir que la grúa trabaje  entonces es importante siempre medir entre positivo y negativo que está  llegando a la a su principal de la grúa  ya saltando un poquito ante cualquier llamado ante cualquier  falla que indiquen en la grúa lo principal es probar la secuencia  ya ya sea gancho o carro  probar la secuencia y que los contactores primero entren hagan el  cierre mecánico y segundo se estén energizando porque  puede que veas o se vea que el contacto no está  cerrando pero quizá no le está llegando  energía o si le está llegando energía y la uv está dañada  entonces en prioridad independiente el movimiento ya sea carro avance o ganchos  la habilidad es probar la secuencia como se hace esto  se deja el tablero sin fuerza sin fuerza y sólo se prueba control  se le pide al operador que ejecute la secuencia y que el contacto no se vea  la secuencia ya sea no sé subir bajar o en caso de los carros y el avance darle  movimiento y ver que los contactores entre como lo indican los planos  si los contactores no entran como indican los planos ya queda ver si le  está llegando energía para eso se puede medir ya sea en la  bornera que está en cada tablero y que coincide con los planos  donde desde la línea 1 hasta la línea 20 en el caso de los ganchos  indica que corresponde cada línea y cada movimiento  ya aparte de medirlo en la bornera también queda medir en el contactor en  la bobina como tal del contactor porque como reitero si  mecánicamente no está ingresando puede que si le esté llegando voltaje  entonces también es necesario medir para descartar que la bobina esté dañada  si le llega voltaje a la bobina y este contactor no acciona hay que descartar  la bobina para eso hay que medirla va a depender según el voltaje son datos  que daré más adelante pero hay que medir la bobina hay bastantes similares  según el funcionamiento donde puedes tomar la referencia pero parten en los  2,5 kilómetros en el caso de las que son para 250 voltios  si la secuencia si entra completa ya sea como decía carro avance y o ganchos  si la secuencia si entra completa entonces queda ver  fuerza  dado que son contactores de corriente continua tienen contactos de cobre  bañados en plata y estos son los que alimentan los motores en los distintos  movimientos ya que se probó asumiendo que se probó el control y éste está bien  se le quita por completo la energía a la grúa  y se levanta las protecciones de los contactores los que extinguen la llama y se levantan las protecciones de los contactores los que extinguen la llama  los que tienen el arco y se revisan los contactos se mueven se deben mover y se  deben forzar para ver si estos se salían de buena manera y tiene un  recorrido adecuado si alguno no está bien si alguno está  demasiado desgastado quemado va a impedir que el equipo funcione como  corresponde y debe ser reemplazado por uno de los contactores y los que tienen el arco y se revisan los contactos se mueven se deben mover y se deben forzar para ver si estos se alinean de buena manera y tiene un  uno del que corresponda, o sea, si es un tip de gancho principal tiene que ser por lo mismo,  si es de auxiliar también tiene que ser por el que corresponde, lo mismo para carro y  avance. No se pueden mezclar componentes de distintos tableros. Si el elemento de fuerza  dentro del tablero también se encuentra bien, ya queda seguir el cableado. Entonces  en los planos está identificado cada punto de conexión del contactor con respecto al  exterior, ya sea a los motores, ya sea a los bancos de resistencia y o límites.  Entonces hay que estar mirando las conexiones dentro del tablero y primero seguirla hacia  el rack de resistencia, que es lo más cercano. Identificar que estén haciendo buen contacto  y que no estén escurridas las conexiones. Una vez en el paño de resistencia también  revisarla. Buscar puntos donde se pueda estar abriendo la resistencia como tal. Si no hay  un punto donde se puede estar aislando o se puede estar yendo a masa. Por eso es importante  tener una buena iluminación, llevar linterna, que tenga la suficiente autonomía para poder  revisar. Si no se encuentra nada, si no se encuentra nada la resistencia y todo al menos  visualmente está bien, queda ver el otro comportamiento, la parte mecánica.  Por lo menos en el avance y en los ganchos estos tienen freno. Hay un tambor que gira junto  con el motor donde el cual se aplica el freno. A veces las fallas de movimiento en los ganchos  y avances tienen incidencia de freno. Me explico. Dado que son electroimanes,  dependen de la corriente y el voltaje para operar. Entonces a mayor corriente mayor fuerza  en el electroimán. Pero si el gap entre el núcleo, la bobina, el freno y el elemento  que trae es demasiado grande, a bajas corrientes no va a ser capaz de cerrar y no va a liberar  los tambores. Principalmente esto sucede en los puntos 1 y 2 bajar. La corriente que  circula por el freno es muy baja y si no está bien ajustado al freno o tiene algún problema este  no va a liberar o va a liberar uno de los dos. Las grúas tienen generalmente dos frenos por gancho.  Basta que no libere bien y va a tener problemas y quien no sepa puede atribuirle este fallo a la  parte eléctrica. Pero es importante que estén bien ajustados los frenos y que se accionen  idealmente al mismo tiempo cuando se desplazan los tambores. Si se desplazan los tambores,  se desplazan los tambores. Si se desplazan los tambores, se desplazan los tambores. Si se desplazan los tambores,  se desplazan los tambores. Si se desplazan los tambores, se desplazan los tambores. Para saber si alguno de los frenos está  trabajando frenado o algo de la redundancia se debe usar una cámara termográfica.  Esta va a identificar inmediato, va a arrojar de inmediato si algún tambor se está sobrecalentando  al trabajar, lo cual indicaría que el freno está mal. Por último y no menor,  Si los frenos tampoco son los responsables del movimiento  Ya queda el motor  Para este entonces ya la grúa está fuera  Está todo bloqueado según las pautas y los procedimientos  Y se debe revisar el motor  Ya es más visual  Si bien hay instrumentos que permiten medir los motores de corriente continua  Estos son bastante robustos  Cuando tienen falla ya es visual  Presentan alta temperatura  Presentan pitting en el colector  Los carbones se quiebran  Los chundes, los carbones hacia el puerto de escobilla  Se vuelven de un color violáceo  O derechamente se rompen  Ya hay evidencias más obvias  Del daño que puede tener el motor y el descarte que se debe hacer 

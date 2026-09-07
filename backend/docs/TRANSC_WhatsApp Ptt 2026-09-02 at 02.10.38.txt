@@ -1,0 +1,26 @@
+[0.00->11.24] Y lo más complejo, lo más complejo viene a ser la secuencia de bajada, en la secuencia
+[11.24->29.64] de bajada a través de la línea 7 y mientras esté 1L se negice el contactor 2L, ya se
+[29.64->42.52] negice el contactor 2L, ¿Cuál es el tema? Que el contactor 2L debe salir cuando ingresa 3L,
+[44.04->51.72] como lo vimos conversado antes, 3L se energiza directo cuando se cierra VR,
+[52.72->60.28] entonces hay un juego, hay un juego más o menos complicado de condiciones lógicas,
+[62.84->75.64] pero intentando resumir, cuando se energiza 3L, queda enclavado por sí mismo a través de VR,
+[76.64->89.04] el mismo contacto normal abierto del 3L, y al entrar 3L, como es una condición que no esté
+[89.04->99.24] ni 3L ni VR, antes siguen 2L, este sale, esto es importante porque cuando hay fallas en la línea 7
+[100.24->115.48] o en el de V, se perubuce un comportamiento ratico entre los contactores 2L y 3L, ya que el 3L
+[115.48->125.24] solamente se activa cuando la bobina del VR se energiza, recordemos que la bobina del VR se
+[125.24->130.04] energiza a través de la línea 2, y el punto negativo va directamente en la conexión física de la
+[130.04->137.64] resistencia, entonces cuando tú haces prueba de control, en el último punto bajada el VR no
+[137.64->143.24] se va a energizar, no va a operar, hay que activarlo manualmente para que se vea el comportamiento
+[143.24->149.64] del 2L y el 3L, esto obviamente porque el paño de resistencia está sin energía, se hay que
+[149.64->161.04] activarlo, voy a intentar buscar un modelo más potente que explique el funcionamiento del 2L y el 3L
+[161.04->172.52] porque es una inclusidad de contacto y encladamiento, pero resumiendo 3L se enclava a sí mismo y hace
+[172.52->179.40] que una vez entre 3L sale el 2L y no antes, no antes porque si no haría un cambio brusco en
+[179.40->188.44] el movimiento del gancho, así que no es antes, pero claro se energiza 3L y al rato menos de un segundo
+[188.44->199.60] deja 2L fuera a hacer cambio y si 3L sale entra 2L inmediatamente, ya entra 2L inmediatamente, eso es lo
+[199.60->209.04] que lo que como se llama lo que permite este juego de condiciones, de hecho tiene un circuito
+[209.04->214.60] de nubes creo, resistencia y condensadores para amortiguar la entrada y salida de estos contactores,
+[216.36->223.24] lo vamos a dejar aparte, déjalo como una nota aparte ver si un modelo con con análisis
+[227.08->233.64] con entrada de vídeo y imagen es capaz de explicar bien el funcionamiento que he de intento planter
+
+--- TEXTO COMPLETO ---
+ Y lo más complejo, lo más complejo viene a ser la secuencia de bajada, en la secuencia  de bajada a través de la línea 7 y mientras esté 1L se negice el contactor 2L, ya se  negice el contactor 2L, ¿Cuál es el tema? Que el contactor 2L debe salir cuando ingresa 3L,  como lo vimos conversado antes, 3L se energiza directo cuando se cierra VR,  entonces hay un juego, hay un juego más o menos complicado de condiciones lógicas,  pero intentando resumir, cuando se energiza 3L, queda enclavado por sí mismo a través de VR,  el mismo contacto normal abierto del 3L, y al entrar 3L, como es una condición que no esté  ni 3L ni VR, antes siguen 2L, este sale, esto es importante porque cuando hay fallas en la línea 7  o en el de V, se perubuce un comportamiento ratico entre los contactores 2L y 3L, ya que el 3L  solamente se activa cuando la bobina del VR se energiza, recordemos que la bobina del VR se  energiza a través de la línea 2, y el punto negativo va directamente en la conexión física de la  resistencia, entonces cuando tú haces prueba de control, en el último punto bajada el VR no  se va a energizar, no va a operar, hay que activarlo manualmente para que se vea el comportamiento  del 2L y el 3L, esto obviamente porque el paño de resistencia está sin energía, se hay que  activarlo, voy a intentar buscar un modelo más potente que explique el funcionamiento del 2L y el 3L  porque es una inclusidad de contacto y encladamiento, pero resumiendo 3L se enclava a sí mismo y hace  que una vez entre 3L sale el 2L y no antes, no antes porque si no haría un cambio brusco en  el movimiento del gancho, así que no es antes, pero claro se energiza 3L y al rato menos de un segundo  deja 2L fuera a hacer cambio y si 3L sale entra 2L inmediatamente, ya entra 2L inmediatamente, eso es lo  que lo que como se llama lo que permite este juego de condiciones, de hecho tiene un circuito  de nubes creo, resistencia y condensadores para amortiguar la entrada y salida de estos contactores,  lo vamos a dejar aparte, déjalo como una nota aparte ver si un modelo con con análisis  con entrada de vídeo y imagen es capaz de explicar bien el funcionamiento que he de intento planter 

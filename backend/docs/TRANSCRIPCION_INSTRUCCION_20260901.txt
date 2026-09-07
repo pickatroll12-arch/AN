@@ -1,0 +1,28 @@
+[0.00 -> 8.00] Ahora, en la primeras etapas se agregó un cuadro que dice
+[8.00 -> 11.00] Contexto enviado al asistente
+[11.00 -> 18.00] Ahí es como ejemplo salía Groda1, consulta general, sin estado de simulación, contacto ninguno
+[18.00 -> 26.00] Ahí sería importante se cuadraabilitarlo para que permita hacer un filtro sobre qué va a ir la consulta
+[26.00 -> 36.00] y indistintamente la profundidad y capacidad del modelo sea más fácil gestar la respuesta
+[36.00 -> 38.00] llevar la conversa, o sea
+[38.00 -> 44.00] Entonces claro, en donde dice Contexto enviado al asistente habría que hacer un cuadro desplegable
+[44.00 -> 46.00] un botón desplegable
+[46.00 -> 54.00] y donde dice Groda1 uno selecciona y pueda alternar entre Groda1, 2 y 3
+[54.00 -> 57.00] Verdad? Groda1, Groda2, GrodaT
+[57.00 -> 62.00] Al costado dice consulta general
+[62.00 -> 72.00] Ahí debería también poder desplegarse un cuadro que permita seleccionar entre cancho principal, auxiliar, carro y avance
+[72.00 -> 73.00] Verdad?
+[73.00 -> 81.00] O dejar también el consulta general, serían 5, serían 5 menús desplegables
+[81.00 -> 88.00] Y el estado de simulación y contacto no creo que valga la pena mantenerlo, debería que sacarlo
+[88.00 -> 99.00] Pero por los dos primeros que yeten ombrella puedes acotar bastante que buscar, a dónde dirigir y qué formación intentar obtener
+[99.00 -> 104.00] Porque voy a hacer una trampa más rato, lo voy a preguntar
+[104.00 -> 108.00] que por el contactor 5A
+[108.00 -> 112.00] ya el 5A solamente está presente en los canchos principales
+[112.00 -> 117.00] Entonces, no espero que el modelo sea capaz de razonar eso rápido
+[117.00 -> 124.00] Pero si le pongo un filtro no voy a necesitar un modelo tan potente para que haga esa deducción, Verdad?
+[124.00 -> 130.00] Si le pongo un filtro ya que le dice de qué Groda me estoy refiriendo
+[130.00 -> 136.00] Y qué movimiento le voy a preguntar a ancho principal, auxiliar, carro, avance
+[136.00 -> 141.00] Ya va a tener que razonar menos entre comillas para apuérdame la información
+[141.00 -> 146.00] Se voy a hacer esa pregunta a trampa, pero creo que es necesario que implemente lo que te estoy diciendo
+
+--- TEXTO COMPLETO ---
+ Ahora, en la primeras etapas se agregó un cuadro que dice  Contexto enviado al asistente  Ahí es como ejemplo salía Groda1, consulta general, sin estado de simulación, contacto ninguno  Ahí sería importante se cuadraabilitarlo para que permita hacer un filtro sobre qué va a ir la consulta  y indistintamente la profundidad y capacidad del modelo sea más fácil gestar la respuesta  llevar la conversa, o sea  Entonces claro, en donde dice Contexto enviado al asistente habría que hacer un cuadro desplegable  un botón desplegable  y donde dice Groda1 uno selecciona y pueda alternar entre Groda1, 2 y 3  Verdad? Groda1, Groda2, GrodaT  Al costado dice consulta general  Ahí debería también poder desplegarse un cuadro que permita seleccionar entre cancho principal, auxiliar, carro y avance  Verdad?  O dejar también el consulta general, serían 5, serían 5 menús desplegables  Y el estado de simulación y contacto no creo que valga la pena mantenerlo, debería que sacarlo  Pero por los dos primeros que yeten ombrella puedes acotar bastante que buscar, a dónde dirigir y qué formación intentar obtener  Porque voy a hacer una trampa más rato, lo voy a preguntar  que por el contactor 5A  ya el 5A solamente está presente en los canchos principales  Entonces, no espero que el modelo sea capaz de razonar eso rápido  Pero si le pongo un filtro no voy a necesitar un modelo tan potente para que haga esa deducción, Verdad?  Si le pongo un filtro ya que le dice de qué Groda me estoy refiriendo  Y qué movimiento le voy a preguntar a ancho principal, auxiliar, carro, avance  Ya va a tener que razonar menos entre comillas para apuérdame la información  Se voy a hacer esa pregunta a trampa, pero creo que es necesario que implemente lo que te estoy diciendo 

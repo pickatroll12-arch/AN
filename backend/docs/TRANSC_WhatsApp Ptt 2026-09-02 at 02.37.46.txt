@@ -1,0 +1,35 @@
+[0.00->9.60] ahora es lo mismo pero para configuración bajada, en el caso de configuración bajada se mantiene la
+[9.60->17.72] entrada del positivo, el cuchillo es posible, el 1L, pero esta vez no vamos por la ruta del
+[17.72->34.60] 1L, el 1L bifurca y viene la conexión del límite, LS y 3 donde está la resistencia del límite
+[36.04->45.96] y esta conecta hacia la derecha con ese 2 de la bobina del campo y agua abajo del db
+[45.96->59.60] ese mismo punto es la conexión del frío número 1 b1, entre 1L y la conexión del límite LS y 3
+[62.48->69.72] va la conexión a 2 de la armadura y ese 1 de la bobina del campo
+[69.72->85.76] hacia la izquierda por cierto como tienes la conexión a 1 de la armadura y la conexión del límite normal
+[85.76->96.92] cerrada para llegar a MHY1 que va a la conexión de R7 de frenado dinámico
+[96.92->110.04] MHY1 va a MHR7, en R7 tenemos el inicio del paño de frenado dinámico que viene a ser R7
+[110.04->120.04] con la entrada R8, R9 y R10, al final del paño dinámico está R10, es el que va directamente al
+[120.04->129.44] db, db que solamente funciona en el primer punto a bajar, a la salida del db como indiciante se
+[129.44->138.20] encuentra ese 2 que es la salida de la bobina del campo, está b1 que es la conexión del freno
+[138.20->148.52] del primer freno, luego b2 la conexión de salida del primer freno, es el sericon b1 del freno número
+[148.52->156.56] 2 y la salida de 2 de freno número 2 va a el grupo de resistencia con los contactores de la
+[156.56->168.84] aceleración que he revido gancho principal parte con 5 a cortocircuitando R6 y gancho auxiliar 4a
+[168.84->188.92] abajo del todo esto saliendo de MHR7 las conexiones intermedias en el freno dinámico son R8 y R9
+[188.92->200.96] R9 viene a ser 2L que se salta gran parte frenado dinámico y entra en conexión por R11
+[202.32->214.72] luego viene R8 que viene asociado con el trator 3L y se conecta en R1, las marcas de estos cables
+[214.72->223.28] viene a ser MH que es main hoist y su respectivo número de resistencia R9, R8, R7
+[224.78->234.12] esa es la conexión a grandes rasgos de el motor embajado como se comporta embajado y lo del
+[234.12->251.20] límite bueno lo del límite LS y 3, LS y 1, LS y 4 y LS y 2 en lo que hace que el motor se
+[251.20->260.76] convierta en perdón se conecten en conexión serie cuando se activa el límite se corta
+[260.76->267.20] el circuito por arriba se energiza la resistencia del límite esto hace que opere el SR para que el
+[267.20->275.40] ancho no se envale y la conexión normal que es como debería ser embajada a cambio por completo
+[275.40->283.02] se abre el circuito que conecta la armadura con el frenado dinámico y que un circuito serie es
+[283.02->295.42] decir la energía va por la armadura a través de A2 sale por A1 circula por el límite a través de
+[295.42->306.30] MHS1 y se vacia la obina del campo y luego sigue a recorrir igual como configuración serie hacia
+[306.30->315.02] A2 hacia B1 B2 de freno número 1 B1 B2 de freno número 2 y así en adelante que es solo
+[315.02->322.94] momentáneo solamente cuando se activa el límite y se debe mantener así solo hasta que se desactive
+[322.94->330.94] no puede hacer algo que se perpetúe en el tiempo porque es riesgoso que el límite algo importante
+[330.94->339.14] que se debe chequear su operación luego de cada mantención si fue demasiado y es mucha información
+[339.14->340.94] inconclusa me lo indica por favor
+
+--- TEXTO COMPLETO ---
+ ahora es lo mismo pero para configuración bajada, en el caso de configuración bajada se mantiene la  entrada del positivo, el cuchillo es posible, el 1L, pero esta vez no vamos por la ruta del  1L, el 1L bifurca y viene la conexión del límite, LS y 3 donde está la resistencia del límite  y esta conecta hacia la derecha con ese 2 de la bobina del campo y agua abajo del db  ese mismo punto es la conexión del frío número 1 b1, entre 1L y la conexión del límite LS y 3  va la conexión a 2 de la armadura y ese 1 de la bobina del campo  hacia la izquierda por cierto como tienes la conexión a 1 de la armadura y la conexión del límite normal  cerrada para llegar a MHY1 que va a la conexión de R7 de frenado dinámico  MHY1 va a MHR7, en R7 tenemos el inicio del paño de frenado dinámico que viene a ser R7  con la entrada R8, R9 y R10, al final del paño dinámico está R10, es el que va directamente al  db, db que solamente funciona en el primer punto a bajar, a la salida del db como indiciante se  encuentra ese 2 que es la salida de la bobina del campo, está b1 que es la conexión del freno  del primer freno, luego b2 la conexión de salida del primer freno, es el sericon b1 del freno número  2 y la salida de 2 de freno número 2 va a el grupo de resistencia con los contactores de la  aceleración que he revido gancho principal parte con 5 a cortocircuitando R6 y gancho auxiliar 4a  abajo del todo esto saliendo de MHR7 las conexiones intermedias en el freno dinámico son R8 y R9  R9 viene a ser 2L que se salta gran parte frenado dinámico y entra en conexión por R11  luego viene R8 que viene asociado con el trator 3L y se conecta en R1, las marcas de estos cables  viene a ser MH que es main hoist y su respectivo número de resistencia R9, R8, R7  esa es la conexión a grandes rasgos de el motor embajado como se comporta embajado y lo del  límite bueno lo del límite LS y 3, LS y 1, LS y 4 y LS y 2 en lo que hace que el motor se  convierta en perdón se conecten en conexión serie cuando se activa el límite se corta  el circuito por arriba se energiza la resistencia del límite esto hace que opere el SR para que el  ancho no se envale y la conexión normal que es como debería ser embajada a cambio por completo  se abre el circuito que conecta la armadura con el frenado dinámico y que un circuito serie es  decir la energía va por la armadura a través de A2 sale por A1 circula por el límite a través de  MHS1 y se vacia la obina del campo y luego sigue a recorrir igual como configuración serie hacia  A2 hacia B1 B2 de freno número 1 B1 B2 de freno número 2 y así en adelante que es solo  momentáneo solamente cuando se activa el límite y se debe mantener así solo hasta que se desactive  no puede hacer algo que se perpetúe en el tiempo porque es riesgoso que el límite algo importante  que se debe chequear su operación luego de cada mantención si fue demasiado y es mucha información  inconclusa me lo indica por favor 

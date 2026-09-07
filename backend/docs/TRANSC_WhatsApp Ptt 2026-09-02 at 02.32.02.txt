@@ -1,0 +1,31 @@
+[0.00->8.00] Entonces, este audio va a ser un poco más largo. Primero voy a definir la fuerza.
+[8.00->14.00] Voy a partir de izquierda a derecha, desde positivo a negativo.
+[14.00->27.00] Desde la izquierda tenemos un switch de cuchilla con la denominación LSW600A 250V.
+[27.00->33.00] Luego un fusible de 900A a 250V.
+[33.00->38.00] Después viene el 1L.
+[38.00->46.00] Luego los contactores H y 1L.
+[46.00->51.00] Obviamente funciona uno de los dos a la vez, no ambos.
+[51.00->58.00] Si nos vamos por la ruta del H, que es para la secuencia subida, nos queda el motor en configuración serie.
+[58.00->64.00] Tenemos H, contacto cerrado del límite LS.
+[64.00->70.00] Luego viene la armadura, contacto cerrado del límite.
+[70.00->80.00] Y luego viene el campo de conexión serie S1, S2.
+[80.00->84.00] Luego viene los frenos.
+[84.00->91.00] Son dos frenos, en el caso del gancho principal, en ambas grúas.
+[91.00->101.00] Tanto la grúa 1 como la grúa 3, tanto la grúa 1 como la grúa 2 como la grúa 3.
+[101.00->106.00] El gancho principal tiene dos frenos que van en serie, la conexión eléctrica.
+[106.00->113.00] Entonces dije S1, S2, la conexión a la ovina del campo.
+[113.00->119.00] Directamente después de S2 viene V1, sale por V2 del freno número 1.
+[119.00->126.00] Con esta con V1 del freno número 2 y sale por V2 del freno número 2.
+[126.00->129.00] De ahí ya viene el paño de aceleración.
+[129.00->136.00] Conexión R6, R5, R4, R3, R2, R1.
+[136.00->140.00] Corto circuito en estos paños resistivos, los contactores.
+[140.00->144.00] En el caso de gancho principal, 5A.
+[144.00->151.00] Primero, en el caso de gancho auxiliar, como son solamente 5 puntos, partiré en el 4A.
+[151.00->165.00] 5A cortocircuita R6, 4A cortocircuita R5, 3A cortocircuita R4, 2A cortocircuita R3, 1A cortocircuita R2, R1.
+[165.00->173.00] Luego viene el contactor M, después viene el contactor 2L, que es el Time Delight.
+[173.00->187.00] Y el fusible número 2 de 950V, más la otra cuchilla con la denominación LSW650V y cierra con el negativo.
+[187.00->193.00] Eso es para la fuerza en configuración subida.
+[193.00->196.00] Contactor H, subida.
+
+--- TEXTO COMPLETO ---
+ Entonces, este audio va a ser un poco más largo. Primero voy a definir la fuerza.  Voy a partir de izquierda a derecha, desde positivo a negativo.  Desde la izquierda tenemos un switch de cuchilla con la denominación LSW600A 250V.  Luego un fusible de 900A a 250V.  Después viene el 1L.  Luego los contactores H y 1L.  Obviamente funciona uno de los dos a la vez, no ambos.  Si nos vamos por la ruta del H, que es para la secuencia subida, nos queda el motor en configuración serie.  Tenemos H, contacto cerrado del límite LS.  Luego viene la armadura, contacto cerrado del límite.  Y luego viene el campo de conexión serie S1, S2.  Luego viene los frenos.  Son dos frenos, en el caso del gancho principal, en ambas grúas.  Tanto la grúa 1 como la grúa 3, tanto la grúa 1 como la grúa 2 como la grúa 3.  El gancho principal tiene dos frenos que van en serie, la conexión eléctrica.  Entonces dije S1, S2, la conexión a la ovina del campo.  Directamente después de S2 viene V1, sale por V2 del freno número 1.  Con esta con V1 del freno número 2 y sale por V2 del freno número 2.  De ahí ya viene el paño de aceleración.  Conexión R6, R5, R4, R3, R2, R1.  Corto circuito en estos paños resistivos, los contactores.  En el caso de gancho principal, 5A.  Primero, en el caso de gancho auxiliar, como son solamente 5 puntos, partiré en el 4A.  5A cortocircuita R6, 4A cortocircuita R5, 3A cortocircuita R4, 2A cortocircuita R3, 1A cortocircuita R2, R1.  Luego viene el contactor M, después viene el contactor 2L, que es el Time Delight.  Y el fusible número 2 de 950V, más la otra cuchilla con la denominación LSW650V y cierra con el negativo.  Eso es para la fuerza en configuración subida.  Contactor H, subida. 

@@ -1,0 +1,22 @@
+[0.00->9.72] Disculpa, pero es más fácil así, porque no tengo esa forma tan máquina de manera lineal
+[9.72->17.92] entregarle información. Entonces conforme me voy recordando y viviendo los planos, puedo decir
+[17.92->22.96] lo importante que puedas esto comprender y reescribir la información.
+[23.68->30.76] En la secuencia de contactores, claro, indica que contactores deben estar presentes en cada
+[30.76->39.04] punto y eso el modelo 4B creo que ya lo tiene entendido, pero hay pequeñas cosas en el control
+[39.04->46.52] que pueden evitar que eso suceda. Por ejemplo, el contacto UV Undervoltage, este contacto
+[46.52->52.56] está destinado a evitar que bajo bajas de voltaje el sistema funcione igual volviendo
+[52.56->63.84] riesgosa la carga. Este contactor es de una bobina de 230V continuo, pero está antecedido
+[63.84->87.76] por 2 protecciones, 1 OL y 2 OL. El 1 OL es instantáneo y el 2 OL es time delay. Quiere
+[87.76->98.92] decir que el 1 OL se configura para falla cortocircuido, por decirlo así, y el 2 OL para una falla
+[98.92->108.92] progresiva o una sobrecarga progresiva que mediante aceite hace el retardo de la activación
+[108.92->115.32] de la sobrecarga. Entonces estos dos o los contactos hilares de estos dos anteceden
+[115.32->126.76] al UV. Si el UV no acciona nada de lo que siga más abajo como secuencia a funcionar. También
+[126.76->138.88] otro contactor que no mencioné es el VR. El VR va asociado a la secuencia de bajada
+[138.88->148.84] el frenado dinámico. Directamente asociado al contactor 3L que da la última velocidad
+[148.84->161.48] de bajada. Ese contactor se alimenta por la línea 2 y como condición tiene el contacto
+[161.48->171.44] normal abierto del DV. El negativo del VR sin embargo cierra con una conexión física a la
+[171.44->187.24] resistencia, en este caso a R7, R7. Esto permite que al activarse el paño dinámico esté habilitado.
+[187.24->193.84] Porque si no se puede presentar una falla y te la voy a decir en otro audio.
+
+--- TEXTO COMPLETO ---
+ Disculpa, pero es más fácil así, porque no tengo esa forma tan máquina de manera lineal  entregarle información. Entonces conforme me voy recordando y viviendo los planos, puedo decir  lo importante que puedas esto comprender y reescribir la información.  En la secuencia de contactores, claro, indica que contactores deben estar presentes en cada  punto y eso el modelo 4B creo que ya lo tiene entendido, pero hay pequeñas cosas en el control  que pueden evitar que eso suceda. Por ejemplo, el contacto UV Undervoltage, este contacto  está destinado a evitar que bajo bajas de voltaje el sistema funcione igual volviendo  riesgosa la carga. Este contactor es de una bobina de 230V continuo, pero está antecedido  por 2 protecciones, 1 OL y 2 OL. El 1 OL es instantáneo y el 2 OL es time delay. Quiere  decir que el 1 OL se configura para falla cortocircuido, por decirlo así, y el 2 OL para una falla  progresiva o una sobrecarga progresiva que mediante aceite hace el retardo de la activación  de la sobrecarga. Entonces estos dos o los contactos hilares de estos dos anteceden  al UV. Si el UV no acciona nada de lo que siga más abajo como secuencia a funcionar. También  otro contactor que no mencioné es el VR. El VR va asociado a la secuencia de bajada  el frenado dinámico. Directamente asociado al contactor 3L que da la última velocidad  de bajada. Ese contactor se alimenta por la línea 2 y como condición tiene el contacto  normal abierto del DV. El negativo del VR sin embargo cierra con una conexión física a la  resistencia, en este caso a R7, R7. Esto permite que al activarse el paño dinámico esté habilitado.  Porque si no se puede presentar una falla y te la voy a decir en otro audio. 

@@ -1,0 +1,9 @@
+﻿backend/.env
+backend/__pycache__/
+backend/*.log
+backend/*.err
+backend/data/*.json
+cloudflared*.log
+cloudflared*.err
+*.log
+*.err
