@@ -552,13 +552,15 @@ function renderAssistantResponse(response) {
   if (!result) return;
   const list = function(items) { return '<ul>' + (items || []).map(function(item) { return '<li>' + assistantEscape(item) + '</li>'; }).join('') + '</ul>'; };
   result.classList.remove('hidden');
+  // Ocultos para usuario final, quedan en debugging (consola + data attr)
+  if (typeof console !== 'undefined' && console.debug) { console.debug('[GruaHelper debug] facts:', response.facts, 'sources:', response.sources); }
+  result.dataset.debugFacts = JSON.stringify(response.facts || []);
+  result.dataset.debugSources = JSON.stringify(response.sources || []);
   result.innerHTML = '<div class="assistant-mode">' + assistantEscape(response.mode || 'Asistente técnico') + '</div>' +
     '<section><h3>Resumen</h3><p>' + assistantEscape(response.summary || '') + '</p></section>' +
-    '<section><h3>Información confirmada</h3>' + list(response.facts) + '</section>' +
     '<section><h3>Hipótesis iniciales</h3>' + list(response.hypotheses) + '</section>' +
     '<section><h3>Información pendiente</h3>' + list(response.questions) + '</section>' +
-    '<section><h3>Seguridad y escalamiento</h3><p>' + assistantEscape(response.safety || ASSISTANT_SAFETY_NOTICE) + '</p></section>' +
-    '<section><h3>Fuentes</h3>' + list(response.sources) + '</section>';
+    '<section><h3>Seguridad y escalamiento</h3><p>' + assistantEscape(response.safety || ASSISTANT_SAFETY_NOTICE) + '</p></section>';
 }
 
 async function askAssistant() {
