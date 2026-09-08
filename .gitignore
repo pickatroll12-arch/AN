@@ -2,7 +2,8 @@
 backend/__pycache__/
 backend/*.log
 backend/*.err
-backend/data/*.json
+backend/data/validaciones_*.json
+backend/data/vector_cache.json
 cloudflared*.log
 cloudflared*.err
 *.log
