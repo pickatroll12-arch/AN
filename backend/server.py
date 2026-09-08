@@ -33,6 +33,13 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 import asyncio
+try:
+    from vector_store import vector_search
+    HAS_VECTOR = True
+except Exception as e:
+    vector_search = None
+    HAS_VECTOR = False
+    print(f"[vector] no disponible: {e}")
 
 # ================= CONFIGURACIÓN CAMBIABLE =================
 # Modelo por defecto para pruebas. Cuando llegue el momento de usar otro,
@@ -138,9 +145,21 @@ def load_docs():
     return docs
 
 def retrieve_docs(question: str, context: dict = None, top_k=3):
-    """RAG simple por palabras clave + boost por filtro de Grúa/módulo."""
+    """RAG híbrido: TF-IDF vectorial offline + keyword + boost por filtro. Sin API, sin bloqueo."""
     if not DOCS_CACHE or time.time() - DOCS_LOADED_AT > 300:
         load_docs()
+    # 1) intento vectorial (offline, numpy)
+    vector_docs = []
+    if HAS_VECTOR and vector_search:
+        try:
+            vec_hits = vector_search(question, context, DOCS_CACHE, top_k=top_k)
+            # vec_hits: list of (score, {file,text})  score 0..1
+            for score, doc in vec_hits:
+                # convierte a escala keyword para combinar: 0..1 -> 0..10
+                vector_docs.append((score*10, doc))
+        except Exception as e:
+            print(f"[vector] search fail: {e}")
+    # 2) keyword scoring clásico
     q_lower = question.lower()
     q_words = set(re.findall(r"\w+", q_lower))
     scope = ""
@@ -151,18 +170,15 @@ def retrieve_docs(question: str, context: dict = None, top_k=3):
         d_lower = doc["text"].lower()
         d_words = set(re.findall(r"\w+", d_lower))
         score = len(q_words & d_words)
-        # boost por filtro activo y por términos críticos
         if scope:
             if scope in d_lower or scope in doc["file"].lower():
                 score += 5
-            # 5A solo en gancho principal
             if "5a" in q_lower and "principal" in scope and "5a" in d_lower:
                 score += 10
             if "principal" in scope and ("19" in doc["file"] or "principal" in d_lower):
                 score += 2
             if "auxiliar" in scope and ("26" in doc["file"] or "auxiliar" in d_lower):
                 score += 2
-        # boosts específicos para evitar confusión DB vs 5A
         if "db" in q_lower and "db" in d_lower:
             score += 8
             if "db_correccion" in doc["file"].lower() or "secuencia_canonica" in doc["file"].lower():
@@ -173,7 +189,6 @@ def retrieve_docs(question: str, context: dict = None, top_k=3):
             score += 15
         if "auxiliar" in q_lower and "auxiliar_bajada" in doc["file"].lower():
             score += 15
-        # preguntas HP/potencia/frame/motor van al doc del owner, no a catálogos genéricos
         if any(k in q_lower for k in ["hp", "potencia", "frame", "caballo", "cuantos hp", "cuántos hp"]):
             if "motores_frames" in doc["file"].lower():
                 score += 20
@@ -183,15 +198,45 @@ def retrieve_docs(question: str, context: dict = None, top_k=3):
                 score -= 5
         if "auxiliar" in scope and "auxiliar" in q_lower and "bajada" in q_lower and "auxiliar" in d_lower:
             score += 8
-        # línea 13 es de 5A, no de DB - penalizar DB docs que no sean 5A si preguntan por 5A y viceversa es manejado por arriba, pero asegurar canónica arriba
         if "secuencia_canonica" in doc["file"].lower():
             score += 3
         scored.append((score, doc))
     scored.sort(key=lambda x: x[0], reverse=True)
-    top = [d for s, d in scored[:top_k] if s > 0]
-    if not top:
-        top = DOCS_CACHE[:top_k]
-    return top
+    # 3) fusión híbrida: promedia vectorial + keyword, deduplica por file
+    # si hay vector, combina; si no, solo keyword
+    if vector_docs:
+        # diccionario file -> mejor score combinado
+        combined = {}
+        for s, d in scored:
+            combined[d["file"]] = combined.get(d["file"], 0) + s*0.6
+        for s, d in vector_docs:
+            # chunks vectoriales pueden tener file con #chunk, normaliza
+            base = d["file"].split("#")[0]
+            combined[base] = combined.get(base, 0) + s*0.4
+            # también guarda texto del chunk para citar
+            # si el chunk no está en scored, añádelo como doc candidato
+        # re-rank: reconstruye lista a partir de combined y recupera docs originales + chunks vectoriales
+        # prioriza chunks vectoriales si tienen texto más específico
+        vec_map = {d["file"].split("#")[0] if "#" in d["file"] else d["file"]: d for _, d in vector_docs}
+        ranked = sorted(combined.items(), key=lambda x: x[1], reverse=True)
+        top = []
+        for fname, _ in ranked[:top_k]:
+            if fname in vec_map:
+                top.append(vec_map[fname])
+            else:
+                # busca en DOCS_CACHE
+                for _, d in scored:
+                    if d["file"] == fname:
+                        top.append(d)
+                        break
+        if not top:
+            top = [d for _, d in scored[:top_k] if _ > 0] or DOCS_CACHE[:top_k]
+        return top
+    else:
+        top = [d for s, d in scored[:top_k] if s > 0]
+        if not top:
+            top = DOCS_CACHE[:top_k]
+        return top
 
 def build_system_prompt(context: dict, retrieved: List[dict]):
     ctx_labels = {
@@ -243,6 +288,8 @@ Reglas obligatorias:
 7. BAJADA SIEMPRE 1L: En bajada el contactor que habilita es 1L (p<0). Si 1L no entra, nada de bajada funciona; pregunta primero por 1L y si el resto de la secuencia muestra el mismo síntoma antes de culpar 4A/3A.
 8. HP/FRAME OBLIGATORIO CON DUTY CYCLE Y CORRIENTE 230V: Si preguntan HP, potencia, frame, corriente o "de cuántos HP es el motor de X", responde SOLO desde MOTORES_FRAMES_20260907.md + Captura.JPG/dimensiones + tabla corrientes 230V. REGLA DE OUTPUT: SIEMPRE incluir FRAME + AMBOS HP con ciclo + RPM según conexión + CORRIENTE ESTIMADA @230V CC. Formato: "Frame 616: 150 HP @60 MIN 75°C (SERIES 450 RPM / COMP 460 RPM / ADJ 460/1150) ≈541 A @230V η0.90 — 200 HP @30 MIN (400/430 RPM) ≈721 A; arranque 811–1081A". Aclarar SERIES=conexión serie (no serie 600), COMP=compound/shunt. Si preguntan sin ciclo, da ambos + corrientes y advierte "estimado a confirmar con placa (V,A,RPM)". Grúa 1 princ 616 150/200 HP 541/721A, aux 614 100/135 HP 360/487A, puente 2x612 75/100 HP 270/360A por motor, carro 606 25/33 HP 90/119A; G2/3 princ 614, aux 612, puente 608 35/45 HP 126/162A. Prohibido inventar (40 HP falso).
 9. VOLTAJE BOBINAS CONTROL: Circuito de control fuerza es 230/240VDC nominal para contactores principales M,H,1A-5A,1L-3L,DB. Si reportan 110VDC en bobina principal, NO concluir "alimentación presente OK" — es subtensión (faltan ~120V) y explica que no cierre. Preguntar por medición +/- completa y fuente. Existen contactores puntuales con voltajes diferentes (se detallará) — no generalizar 230V a todos sin confirmar.
+10. SEGUNDA RONDA — VERIFICACIÓN CONTROL: Tras la 1ª ronda donde pediste más info (ej. posición, tensión, si entra 1L), en la 2ª ronda con datos del usuario DEBES sugerir/verificar si en control está entrando correctamente: tensión +/- estable 230/240VDC en barras, sin caídas, contactos del máster y de secuencia previa cerrando (H/M para subida, 1L para bajada, AR time-delay cerrando a negativo antes de 1A). No vuelvas a pedir lo mismo: avanza a verificar entrada de control antes de saltar a bobina o cable.
+11. PROPUESTA EXCLUSIONES (no verdad absoluta, pendiente validar): Owner propuso 7 reglas (H vs 1L excluyentes, DB solo neutro/-1, 1L→2L→3L secuencial, 1A→5A acumulativo, M requerido para H/1L, etc.) — aún no canónico. Verificar contra pClosedMap/aClosedMap y SECUENCIA_CANONICA antes de asumir.
 7. Responde SIEMPRE en JSON válido con esta estructura exacta, sin texto fuera del JSON:
 {{
   "mode": "API local Ollama ({OLLAMA_MODEL_DEFAULT})",
