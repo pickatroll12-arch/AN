@@ -56,6 +56,8 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 GROQ_MODEL_DEFAULT = os.getenv("GROQ_MODEL", OLLAMA_MODEL_DEFAULT)
 DEEPSEEK_MODEL_DEFAULT = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
+# Modelo efectivo que realmente se envía a la API (Groq/DeepSeek manda GROQ_MODEL, no OLLAMA_MODEL si difieren)
+EFFECTIVE_MODEL = (GROQ_MODEL_DEFAULT if "groq" in OLLAMA_URL.lower() else (DEEPSEEK_MODEL_DEFAULT if "deepseek" in OLLAMA_URL.lower() else OLLAMA_MODEL_DEFAULT))
 BACKEND_PORT = int(os.getenv("PORT", "8000"))
 IS_GROQ = ("groq" in OLLAMA_URL.lower() and GROQ_API_KEY != "")
 IS_DEEPSEEK = "deepseek" in OLLAMA_URL.lower() and DEEPSEEK_API_KEY != ""
@@ -66,7 +68,7 @@ HAS_GROQ_FALLBACK = bool(GROQ_API_KEY and DEEPSEEK_API_KEY)
 
 # Aviso explícito para cambio de modelo futuro
 PROVIDER_NAME = "DeepSeek" if IS_DEEPSEEK else ("Groq" if IS_GROQ else "Ollama")
-MODEL_SWITCH_NOTE = f"Modelo actual: {OLLAMA_MODEL_DEFAULT} ({PROVIDER_NAME}) | Para cambiar: set OLLAMA_MODEL/GROQ_MODEL/DEEPSEEK_MODEL=nuevo_modelo && reiniciar server.py"
+MODEL_SWITCH_NOTE = f"Modelo actual: {EFFECTIVE_MODEL} ({PROVIDER_NAME}) | Para cambiar: set OLLAMA_MODEL/GROQ_MODEL/DEEPSEEK_MODEL=nuevo_modelo && reiniciar server.py"
 
 ASSISTANT_SAFETY_NOTICE = "Este asistente es una herramienta de consulta y capacitación. No controla equipos ni sustituye procedimientos vigentes."
 
@@ -91,9 +93,40 @@ DOCS_LOADED_AT = 0
 # Validaciones pendientes de solución reportada por usuario (requiere tu visto bueno)
 PENDING_FILE = Path(__file__).parent / "data" / "validaciones_pendientes.json"
 VALIDATED_FILE = Path(__file__).parent / "data" / "validaciones_validadas.json"
+HISTORIAL_FILE = Path(__file__).parent / "data" / "historial_conversaciones.jsonl"
 PENDING_FILE.parent.mkdir(parents=True, exist_ok=True)
+
 import uuid
 from datetime import datetime, timezone
+import subprocess, threading
+
+def _auto_push_historial():
+    def _push():
+        try:
+            repo = Path(__file__).parent.parent
+            subprocess.run(["git", "add", "backend/data/historial_conversaciones.jsonl"], cwd=repo, capture_output=True, timeout=10)
+            # solo commit si hay cambios
+            r = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=repo)
+            if r.returncode != 0:
+                subprocess.run(["git", "commit", "-m", f"auto historial {datetime.now(timezone.utc).isoformat()}"], cwd=repo, capture_output=True, timeout=10)
+                subprocess.run(["git", "push", "origin", "main"], cwd=repo, capture_output=True, timeout=30)
+                print("[historial] auto-push ok")
+            else:
+                print("[historial] no changes to push")
+        except Exception as e:
+            print(f"[historial] auto-push fail: {e}")
+    threading.Thread(target=_push, daemon=True).start()
+
+def append_historial(entry: dict):
+    try:
+        entry["_ts"] = datetime.now(timezone.utc).isoformat()
+        entry["model"] = EFFECTIVE_MODEL
+        entry["provider"] = PROVIDER_NAME
+        with open(HISTORIAL_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        _auto_push_historial()
+    except Exception as e:
+        print(f"[historial] append fail: {e}")
 
 def _load_json(p: Path):
     if not p.exists():
@@ -287,15 +320,15 @@ Reglas obligatorias:
 3. Orden de hipótesis para contactor que no cierra: 1) falta de energía en bobina (+/-), 2) contacto previo no cierra — M+H en +1 no tienen previo; para 1A es H+M, para 2A es 1A, para 3A es 2A, para 4A es 3A, para 5A es 4A y H. H NUNCA tiene como previo a 1L (1L es solo bajada p<0); si falla H sospechar M o alimentación +/-, NO 1L. En bajada el asociado es 1L: primero verificar si 1L entra y si el resto de la secuencia tiene el mismo síntoma, 3) daño en conductor master→panel gancho (línea 13 para 5A solo, línea 11 para 4A subida; en bajada NO es 13), 4) AR time-delay que cierra a negativo / bobina abierta / contacto plata (solo después de mediciones). Respeta este orden y NO inventes para abultar: si el usuario solo dice "gancho no se mueve en primer punto bajar" sin mediciones, deja hypotheses vacío o con "No puedo dar hipótesis sin medir 1L y bobina vs +/-" y pregunta.
 4. Si no hay evidencia, pide medición concreta antes de hipotetizar master. Está permitido y es preferible responder "No puedo dar una hipótesis concreta sin más datos" cuando falte información clave; en ese caso deja hypotheses vacío o con ese mensaje y usa questions para pedir síntoma exacto, posición/paso, qué se midió (tensión bobina +/-, continuidad 1L, si resto de secuencia falla igual). NUNCA rellenes hypotheses para completar campos.
 5. CASO FUERA DE ALCANCE POR FILTRO (trampa 5A): Si preguntan por 5A y el filtro es Gancho auxiliar / Carro / Avance / Consulta general sin principal, NO rellenes hipótesis. Responde solo con summary + facts confirmando que 5A no existe en ese módulo (solo Gancho principal tiene 5A) y en "questions" pregunta únicamente si la selección de filtros es la adecuada. Deja hypotheses vacío. Ejemplo válido: summary="Se confirma que el contacto 5A no está presente en la secuencia de bajada para el módulo Gancho Auxiliar." facts=["El módulo actual es Gancho Auxiliar (GRÚA 1) [filtro activo].","Según la documentación y el filtro activo, el Gancho Auxiliar no posee el contacto 5A.","El contacto 5A es exclusivo del Gancho Principal."] questions=["¿Es correcta la selección actual (Gancho Auxiliar - GRÚA 1) o deseas cambiar el filtro a Gancho Principal para consultar 5A?"] IMPORTANTE: en facts usa exactamente el Módulo y Grúa del contexto; en questions menciona primero el filtro activo actual y luego sugiere Gancho Principal solo como alternativa.
-6. CAPACIDAD LIMITADA Y ANTI-RELLENO: Si la consulta es ambigua o sin datos suficientes (ej. solo "gancho no se mueve en primer punto bajar" sin decir si 1L entra, sin tensión bobina), responde con honestidad capa por capa: summary breve, facts con lo poco confirmado, hypotheses = [] (vacío) y questions pidiendo: ¿entra 1L en bajada? ¿pasa en todos los puntos de bajada o solo en -1? ¿qué tensión +/ - hay en bobina 4A/3A y si AR cierra a negativo? NO inventes 3-4 hipótesis para llenar espacio.
+6. CAPACIDAD LIMITADA Y ANTI-GENÉRICO VAGO: Si la consulta es vaga o genérica (ej. "DB es NC, qué pasa si contactos de fuerza no abren" sin decir gancho principal/auxiliar, subida/bajada, punto, si es fuerza o control), NUNCA des respuesta genérica que confunda (prohibido hipótesis amplias). Forzar densidad OPPUESTA: dejar hypotheses = [] y en summary explicar que falta contexto crítico, en questions pedir OBLIGATORIO: ¿GRÚA 1/2/3? ¿Gancho principal/auxiliar? ¿Contactos de fuerza o de control? ¿En subida o bajada, qué punto? ¿Síntoma exacto (no abre = queda pegado, no separa, chispeo, motor sigue girando)? Si es consultado específico como "El contactor DB, es fisicamente normal cerrado. como afectaria el funcionamiento del gancho si los contactos de fuerza no abren? no se separan?" responder denso solo si puedes citar DB NC físico + fuerza vs control, si no pedir precisión antes de teorizar.
 7. BAJADA SIEMPRE 1L: En bajada el contactor que habilita es 1L (p<0). Si 1L no entra, nada de bajada funciona; pregunta primero por 1L y si el resto de la secuencia muestra el mismo síntoma antes de culpar 4A/3A.
 8. HP/FRAME OBLIGATORIO CON DUTY CYCLE Y CORRIENTE 230V: Si preguntan HP, potencia, frame, corriente o "de cuántos HP es el motor de X", responde SOLO desde MOTORES_FRAMES_20260907.md + Captura.JPG/dimensiones + tabla corrientes 230V. REGLA DE OUTPUT: SIEMPRE incluir FRAME + AMBOS HP con ciclo + RPM según conexión + CORRIENTE ESTIMADA @230V CC. Formato: "Frame 616: 150 HP @60 MIN 75°C (SERIES 450 RPM / COMP 460 RPM / ADJ 460/1150) ≈541 A @230V η0.90 — 200 HP @30 MIN (400/430 RPM) ≈721 A; arranque 811–1081A". Aclarar SERIES=conexión serie (no serie 600), COMP=compound/shunt. Si preguntan sin ciclo, da ambos + corrientes y advierte "estimado a confirmar con placa (V,A,RPM)". Grúa 1 princ 616 150/200 HP 541/721A, aux 614 100/135 HP 360/487A, puente 2x612 75/100 HP 270/360A por motor, carro 606 25/33 HP 90/119A; G2/3 princ 614, aux 612, puente 608 35/45 HP 126/162A. Prohibido inventar (40 HP falso).
 9. VOLTAJE BOBINAS CONTROL: Circuito de control fuerza es 230/240VDC nominal para contactores principales M,H,1A-5A,1L-3L,DB. Si reportan 110VDC en bobina principal, NO concluir "alimentación presente OK" — es subtensión (faltan ~120V) y explica que no cierre. Preguntar por medición +/- completa y fuente. Existen contactores puntuales con voltajes diferentes (se detallará) — no generalizar 230V a todos sin confirmar.
 10. SEGUNDA RONDA — VERIFICACIÓN CONTROL: Tras la 1ª ronda donde pediste más info (ej. posición, tensión, si entra 1L), en la 2ª ronda con datos del usuario DEBES sugerir/verificar si en control está entrando correctamente: tensión +/- estable 230/240VDC en barras, sin caídas, contactos del máster y de secuencia previa cerrando (H/M para subida, 1L para bajada, AR time-delay cerrando a negativo antes de 1A). No vuelvas a pedir lo mismo: avanza a verificar entrada de control antes de saltar a bobina o cable.
 11. PROPUESTA EXCLUSIONES (no verdad absoluta, pendiente validar): Owner propuso 7 reglas (H vs 1L excluyentes, DB solo neutro/-1, 1L→2L→3L secuencial, 1A→5A acumulativo, M requerido para H/1L, etc.) — aún no canónico. Verificar contra pClosedMap/aClosedMap y SECUENCIA_CANONICA antes de asumir.
-7. Responde SIEMPRE en JSON válido con esta estructura exacta, sin texto fuera del JSON:
+7. Responde SIEMPRE en JSON válido con esta estructura exacta, sin texto fuera del JSON (mode debe reflejar proveedor y modelo efectivo):
 {{
-  "mode": "API local Ollama ({OLLAMA_MODEL_DEFAULT})",
+  "mode": "API Groq (openai/gpt-oss-120b) si Groq, API local Ollama si Ollama",
   "summary": "Resumen breve",
   "facts": ["hecho 1"],
   "hypotheses": ["hipótesis 1"],
@@ -355,7 +388,7 @@ async def health():
             "backend": "GruaHelper Groq Wrapper",
             "ollama_url": OLLAMA_URL,
             "ollama_ok": groq_ok,
-            "model_actual": OLLAMA_MODEL_DEFAULT,
+            "model_actual": EFFECTIVE_MODEL,
             "model_switch_note": MODEL_SWITCH_NOTE,
             "ollama_models": model_names,
             "docs_loaded": len(DOCS_CACHE),
@@ -379,7 +412,7 @@ async def health():
             "backend": "GruaHelper Ollama Wrapper",
             "ollama_url": OLLAMA_URL,
             "ollama_ok": ollama_ok,
-            "model_actual": OLLAMA_MODEL_DEFAULT,
+            "model_actual": EFFECTIVE_MODEL,
             "model_switch_note": MODEL_SWITCH_NOTE,
             "ollama_models": [m.get("name") for m in models] if ollama_ok else [],
             "docs_loaded": len(DOCS_CACHE),
@@ -550,8 +583,11 @@ async def diagnostico(request: Request):
             "sources": [d["file"] for d in retrieved]
         }
     else:
-        # asegura campos obligatorios y normaliza tipos
-        parsed.setdefault("mode", f"API local Ollama ({requested_model})")
+        # corrige mode para que siempre muestre proveedor y modelo efectivo correcto (fix info incorrecta)
+        correct_mode = f"API {PROVIDER_NAME} ({EFFECTIVE_MODEL})"
+        if parsed.get("mode") and EFFECTIVE_MODEL not in str(parsed.get("mode")):
+            parsed["mode"] = correct_mode
+        parsed.setdefault("mode", correct_mode)
         parsed.setdefault("safety", ASSISTANT_SAFETY_NOTICE)
         parsed.setdefault("sources", [d["file"] for d in retrieved])
         # normaliza sources a lista si el modelo devolvió string
@@ -561,11 +597,15 @@ async def diagnostico(request: Request):
             if isinstance(parsed.get(k), str):
                 parsed[k] = [parsed[k]]
 
-    # Guarda en historial
+    # Guarda en historial memoria + persistente jsonl para seguimiento
     HISTORIAL[session_id] = (hist + [{"role": "user", "content": question}, {"role": "assistant", "content": json.dumps(parsed, ensure_ascii=False)}])[-MAX_HISTORIAL_TURNS*2:]
+    try:
+        append_historial({"sessionId": session_id, "crane": context.get("crane"), "module": context.get("module"), "position": context.get("position"), "question": question, "summary": parsed.get("summary"), "facts": parsed.get("facts"), "hypotheses": parsed.get("hypotheses"), "questions": parsed.get("questions"), "sources": parsed.get("sources"), "mode": parsed.get("mode")})
+    except:
+        pass
 
     # Añade nota de cambio de modelo y de validación pendiente
-    parsed["_meta"] = {"model_usado": requested_model, "model_default": OLLAMA_MODEL_DEFAULT, "switch_note": "Para cambiar de modelo avisa y se actualiza OLLAMA_MODEL"}
+    parsed["_meta"] = {"model_usado": EFFECTIVE_MODEL, "model_default": OLLAMA_MODEL_DEFAULT, "switch_note": "Para cambiar de modelo avisa y se actualiza OLLAMA_MODEL"}
     if pending_entry:
         parsed["_pending_validacion"] = {"id": pending_entry["id"], "estado": "pendiente_validacion", "nota": "Solución reportada quedó pendiente de tu visto bueno. Usa GET /api/validaciones/pendientes y POST /api/validaciones/aprobar {id}"}
 
@@ -668,6 +708,10 @@ async def diagnostico_stream(request: Request):
                         if isinstance(parsed.get("sources"), str):
                             parsed["sources"] = [parsed["sources"]]
                     HISTORIAL[session_id] = (hist + [{"role": "user", "content": question}, {"role": "assistant", "content": json.dumps(parsed, ensure_ascii=False)}])[-MAX_HISTORIAL_TURNS*2:]
+                    try:
+                        append_historial({"sessionId": session_id, "crane": context.get("crane"), "module": context.get("module"), "position": context.get("position"), "question": question, "summary": parsed.get("summary"), "facts": parsed.get("facts"), "hypotheses": parsed.get("hypotheses"), "questions": parsed.get("questions"), "sources": parsed.get("sources"), "mode": parsed.get("mode")})
+                    except:
+                        pass
                     yield f"data: {json.dumps({'done': True, 'final': parsed}, ensure_ascii=False)}\n\n"
                 except Exception as e:
                     yield f"data: {json.dumps({'done': True, 'error': str(e)}, ensure_ascii=False)}\n\n"
@@ -675,9 +719,30 @@ async def diagnostico_stream(request: Request):
                 yield f"data: {json.dumps({'error': str(e)}, ensure_ascii=False)}\n\n"
         return StreamingResponse(event_generator(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "Connection": "keep-alive", "X-Accel-Buffering": "no"})
 
+@app.get("/api/historial")
+async def get_historial(limit: int = 100, sessionId: str = None):
+    try:
+        if not HISTORIAL_FILE.exists():
+            return {"total": 0, "historial": []}
+        lines = HISTORIAL_FILE.read_text(encoding="utf-8").strip().split("\n")
+        entries = []
+        for l in lines[-limit*2:]:
+            if not l.strip():
+                continue
+            try:
+                entries.append(json.loads(l))
+            except:
+                continue
+        if sessionId:
+            entries = [e for e in entries if e.get("sessionId") == sessionId]
+        entries = entries[-limit:]
+        return {"total": len(entries), "historial": entries}
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
 @app.get("/")
 async def root():
-    return {"message": "GruaHelper backend activo", "endpoint": "/api/diagnostico", "health": "/api/health", "model_actual": OLLAMA_MODEL_DEFAULT, "nota": MODEL_SWITCH_NOTE}
+    return {"message": "GruaHelper backend activo", "endpoint": "/api/diagnostico", "health": "/api/health", "model_actual": EFFECTIVE_MODEL, "nota": MODEL_SWITCH_NOTE}
 
 if __name__ == "__main__":
     import uvicorn
