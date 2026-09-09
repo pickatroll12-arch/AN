@@ -57,9 +57,12 @@ DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
 GROQ_MODEL_DEFAULT = os.getenv("GROQ_MODEL", OLLAMA_MODEL_DEFAULT)
 DEEPSEEK_MODEL_DEFAULT = os.getenv("DEEPSEEK_MODEL", "deepseek-chat")
 BACKEND_PORT = int(os.getenv("PORT", "8000"))
-IS_GROQ = ("groq" in OLLAMA_URL.lower() and GROQ_API_KEY != "") or ("deepseek" in OLLAMA_URL.lower() and DEEPSEEK_API_KEY != "")
-IS_DEEPSEEK = "deepseek" in OLLAMA_URL.lower()
-API_KEY = DEEPSEEK_API_KEY if IS_DEEPSEEK else GROQ_API_KEY
+IS_GROQ = ("groq" in OLLAMA_URL.lower() and GROQ_API_KEY != "")
+IS_DEEPSEEK = "deepseek" in OLLAMA_URL.lower() and DEEPSEEK_API_KEY != ""
+# prioridad: Groq si OLLAMA_URL es groq, sino DeepSeek si OLLAMA_URL es deepseek, sino Ollama local
+API_KEY = GROQ_API_KEY if IS_GROQ else (DEEPSEEK_API_KEY if IS_DEEPSEEK else "")
+# fallback automático: si Groq configurado pero falla, permite reintentar con DeepSeek si existe
+HAS_GROQ_FALLBACK = bool(GROQ_API_KEY and DEEPSEEK_API_KEY)
 
 # Aviso explícito para cambio de modelo futuro
 PROVIDER_NAME = "DeepSeek" if IS_DEEPSEEK else ("Groq" if IS_GROQ else "Ollama")
