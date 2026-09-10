@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gruahelper-v20-endpoint-minipc';
+const CACHE_NAME = 'gruahelper-v21-endpoint-minipc';
 const APP_SHELL = [
   './index.html',
   './manifest.json',
