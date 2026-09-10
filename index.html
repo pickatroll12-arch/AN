@@ -653,8 +653,8 @@ async function askAssistant() {
           }
         }
       } catch(streamErr) {
-        // si streaming falla, fallback a no-stream
-        if (!usedStream) throw streamErr;
+        // si streaming falla (red/proxy/SSE), cae a fallback no-stream abajo
+        if (window._thinkingDotInt) { clearInterval(window._thinkingDotInt); window._thinkingDotInt=null; }
       }
       if (!usedStream) {
         const response = await fetch(ASSISTANT_CONFIG.endpoint, {
