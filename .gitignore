@@ -2,9 +2,12 @@
 backend/__pycache__/
 backend/*.log
 backend/*.err
-backend/data/validaciones_*.json
-backend/data/vector_cache.json
+backend/data/
+backend/docs/pdfs_txt/
 cloudflared*.log
 cloudflared*.err
 *.log
 *.err
+.vercel
+.env*
+*.bak

@@ -370,7 +370,7 @@ def extract_json(text: str):
 @app.get("/api/health")
 async def health():
     # verifica Ollama o Groq/DeepSeek
-    if IS_GROQ:
+    if IS_GROQ or IS_DEEPSEEK:
         try:
             async with httpx.AsyncClient(timeout=5) as client:
                 r = await client.get(f"{OLLAMA_URL}/models", headers={"Authorization": f"Bearer {API_KEY}"})
@@ -422,7 +422,7 @@ async def health():
 
 @app.get("/api/models")
 async def list_models():
-    if IS_GROQ:
+    if IS_GROQ or IS_DEEPSEEK:
         try:
             async with httpx.AsyncClient(timeout=5) as client:
                 r = await client.get(f"{OLLAMA_URL}/models", headers={"Authorization": f"Bearer {API_KEY}"})
@@ -501,8 +501,8 @@ async def diagnostico(request: Request):
     # Añade system + pregunta actual
     ollama_messages = [{"role": "system", "content": system_prompt}] + messages + [{"role": "user", "content": question}]
 
-    # Llama a Ollama o Groq
-    if IS_GROQ:
+    # Llama a Ollama, Groq o DeepSeek (OpenAI-compatible)
+    if IS_GROQ or IS_DEEPSEEK:
         payload = {
             "model": requested_model,
             "messages": ollama_messages,
@@ -519,6 +519,55 @@ async def diagnostico(request: Request):
                 data = r.json()
                 content = data.get("choices", [{}])[0].get("message", {}).get("content", "") or ""
         except Exception as e:
+            # Fallback a DeepSeek si Groq falla con 429 y hay key DeepSeek
+            err_str = str(e)
+            if HAS_GROQ_FALLBACK and ("429" in err_str or "Too Many Requests" in err_str):
+                try:
+                    ds_payload = {
+                        "model": DEEPSEEK_MODEL_DEFAULT,
+                        "messages": ollama_messages,
+                        "stream": False,
+                        "temperature": 0.2,
+                    }
+                    ds_headers = {"Authorization": f"Bearer {DEEPSEEK_API_KEY}", "Content-Type": "application/json"}
+                    ds_endpoint = "https://api.deepseek.com/chat/completions"
+                    async with httpx.AsyncClient(timeout=180) as ds_client:
+                        ds_r = await ds_client.post(ds_endpoint, json=ds_payload, headers=ds_headers)
+                        ds_r.raise_for_status()
+                        ds_data = ds_r.json()
+                        content = ds_data.get("choices", [{}])[0].get("message", {}).get("content", "") or ""
+                        parsed = extract_json(content)
+                        if not parsed:
+                            parsed = {
+                                "mode": f"API DeepSeek fallback ({DEEPSEEK_MODEL_DEFAULT})",
+                                "summary": content[:300] if content else "Respuesta DeepSeek sin JSON",
+                                "facts": ["Fallback DeepSeek por Groq 429", f"Modelo: {DEEPSEEK_MODEL_DEFAULT}"],
+                                "hypotheses": [],
+                                "questions": [],
+                                "safety": ASSISTANT_SAFETY_NOTICE,
+                                "sources": ["DeepSeek fallback"]
+                            }
+                        HISTORIAL[session_id] = (HISTORIAL.get(session_id, []) + [{"role": "user", "content": question}, {"role": "assistant", "content": content}])[-MAX_HISTORIAL_TURNS*2:]
+                        return JSONResponse(content={
+                            "mode": parsed.get("mode", "DeepSeek fallback"),
+                            "summary": parsed.get("summary", ""),
+                            "facts": parsed.get("facts", []),
+                            "hypotheses": parsed.get("hypotheses", []),
+                            "questions": parsed.get("questions", []),
+                            "safety": parsed.get("safety", ASSISTANT_SAFETY_NOTICE),
+                            "sources": parsed.get("sources", ["DeepSeek fallback"]) + [r["file"] for r in retrieved[:2]],
+                            "_meta": {"model_usado": DEEPSEEK_MODEL_DEFAULT, "fallback": True}
+                        })
+                except Exception as ds_e:
+                    return JSONResponse(status_code=502, content={
+                        "mode": "Error Groq+DeepSeek",
+                        "summary": f"Groq falló: {e} | DeepSeek fallback falló: {ds_e}",
+                        "facts": [f"Modelo Groq: {requested_model}", f"Modelo DeepSeek: {DEEPSEEK_MODEL_DEFAULT}"],
+                        "hypotheses": [],
+                        "questions": [],
+                        "safety": ASSISTANT_SAFETY_NOTICE,
+                        "sources": []
+                    })
             return JSONResponse(status_code=502, content={
                 "mode": "Error Groq",
                 "summary": f"No se pudo consultar Groq: {e}",
@@ -627,7 +676,7 @@ async def diagnostico_stream(request: Request):
     hist = HISTORIAL.get(session_id, [])
     messages = hist[-MAX_HISTORIAL_TURNS*2:]
     ollama_messages = [{"role": "system", "content": system_prompt}] + messages + [{"role": "user", "content": question}]
-    if IS_GROQ:
+    if IS_GROQ or IS_DEEPSEEK:
         payload = {
             "model": requested_model,
             "messages": ollama_messages,
