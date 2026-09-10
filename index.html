@@ -470,7 +470,17 @@ function getAssistantSessionId() {
 }
 function navigateTo(view) { state.view = view; render(); }
 function goBack() { navigateTo('menu'); }
-function openAssistant() { navigateTo('asistente-tecnico'); }
+function openAssistant() { navigateTo('asistente-tecnico'); refreshAssistantModel(); }
+function refreshAssistantModel() {
+  try {
+    const base = (ASSISTANT_CONFIG.endpoint || '').replace('/api/diagnostico', '');
+    if (!base) return;
+    fetch(base + '/api/health', { headers: { 'ngrok-skip-browser-warning': 'true' } })
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if (d && d.model_actual) window._assistantModel = d.model_actual; })
+      .catch(function(){});
+  } catch(e) {}
+}
 function setAssistantCrane(idx) { state.craneIndex = idx; try{ sessionStorage.setItem('gh_session','gh-'+Date.now()+'-'+Math.random().toString(36).slice(2)); }catch(e){} render(); }
 function setAssistantScope(scope) { state.assistantScope = scope; try{ sessionStorage.setItem('gh_session','gh-'+Date.now()+'-'+Math.random().toString(36).slice(2)); }catch(e){} render(); }
 
@@ -540,13 +550,13 @@ function buildDemoAssistantResponse(question, context) {
     '¿Qué manual, plano o procedimiento vigente aplica a esta grúa?'
   ];
   return {
-    mode: 'API local Ollama (qwen3.5-4b)',
+    mode: 'Asistente técnico (demo local)',
     summary: 'Orientación inicial generada con el contexto del simulador y base documental indexada.',
     facts: [situation, 'Consulta recibida: “' + String(question || '').trim() + '”'],
     hypotheses: hypotheses,
     questions: questions,
     safety: ASSISTANT_SAFETY_NOTICE,
-    sources: ['Base documental indexada: CASOS_EMPERICOS_ORGANIZADOS + CARBONES_FALLAS_TIPICAS + MOTORES_Y_RESISTENCIAS + pdfs_txt (75 docs)']
+    sources: ['Base documental indexada (modo demo)']
   };
 }
 
@@ -604,7 +614,7 @@ async function askAssistant() {
           usedStream = true;
           if (result) {
             result.classList.remove('hidden');
-            result.innerHTML = '<div class="assistant-mode">API local Ollama (qwen3.5-4b) · thinking</div><section style="text-align:center;padding:24px 12px;"><div style="display:inline-flex;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:999px;padding:10px 18px;"><span style="width:10px;height:10px;border-radius:50%;background:#e8894a;animation:pulse 1.5s infinite;display:inline-block;"></span><span id="assistantThinkingText" style="font-size:13px;color:#334155;font-weight:600;">Pensando</span><span id="assistantThinkingDots" style="font-size:13px;color:#334155;letter-spacing:2px;"></span></div><p style="font-size:11px;color:#64748b;margin-top:10px;">Analizando tu caso con la base documental (75 docs)…</p></section><style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.9)}} @keyframes dots{0%{content:\"\"}25%{content:\".\"}50%{content:\"..\"}75%{content:\"...\"}}</style>';
+            result.innerHTML = '<div class="assistant-mode">' + assistantEscape(window._assistantModel || 'Asistente técnico') + ' · thinking</div><section style="text-align:center;padding:24px 12px;"><div style="display:inline-flex;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:999px;padding:10px 18px;"><span style="width:10px;height:10px;border-radius:50%;background:#e8894a;animation:pulse 1.5s infinite;display:inline-block;"></span><span id="assistantThinkingText" style="font-size:13px;color:#334155;font-weight:600;">Pensando</span><span id="assistantThinkingDots" style="font-size:13px;color:#334155;letter-spacing:2px;"></span></div><p style="font-size:11px;color:#64748b;margin-top:10px;">Analizando tu caso con la base documental…</p></section><style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.9)}} @keyframes dots{0%{content:\"\"}25%{content:\".\"}50%{content:\"..\"}75%{content:\"...\"}}</style>';
             // animación puntos suspensivos
             let dotInt = setInterval(function(){ const d=document.getElementById('assistantThinkingDots'); if(d) d.textContent = d.textContent.length>=3 ? '' : d.textContent+'.'; }, 400);
             // guarda para limpiar
@@ -653,8 +663,8 @@ async function askAssistant() {
           }
         }
       } catch(streamErr) {
-        // si streaming falla, fallback a no-stream
-        if (!usedStream) throw streamErr;
+        // si streaming falla (red/proxy/SSE), cae a fallback no-stream abajo
+        if (window._thinkingDotInt) { clearInterval(window._thinkingDotInt); window._thinkingDotInt=null; }
       }
       if (!usedStream) {
         const response = await fetch(ASSISTANT_CONFIG.endpoint, {
